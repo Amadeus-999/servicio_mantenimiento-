@@ -12,31 +12,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $facultad = $_POST['facultad'];
     $password = $_POST['password']; // Contraseña en texto plano
 
-    // Hash de la contraseña
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    // Verificar si el número personal ya existe
+    $sql_check = "SELECT COUNT(*) FROM registro WHERE npesonal = :npesonal";
+    $stmt_check = $pdo->prepare($sql_check);
+    $stmt_check->execute([':npesonal' => $npesonal]);
+    $count = $stmt_check->fetchColumn();
 
-    // Insertar el nuevo usuario en la base de datos
-    $sql = "INSERT INTO registro (npesonal, nombre, apellido_p, apellido_m, extension, correo, facultad, password)
-            VALUES (:npesonal, :nombre, :apellido_p, :apellido_m, :extension, :correo, :facultad, :password)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        ':npesonal' => $npesonal,
-        ':nombre' => $nombre,
-        ':apellido_p' => $apellido_p,
-        ':apellido_m' => $apellido_m,
-        ':extension' => $extension,
-        ':correo' => $correo,
-        ':facultad' => $facultad,
-        ':password' => $hashed_password
-    ]);
+    if ($count > 0) {
+        $warning = "El número personal ya está registrado. Si ya tienes una cuenta, por favor inicia sesión.";
+    } else {
+        // Hash de la contraseña
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    // Redirigir o mostrar un mensaje de éxito
-    header('Location: login.php');
-    exit;
+        // Insertar el nuevo usuario en la base de datos
+        $sql = "INSERT INTO registro (npesonal, nombre, apellido_p, apellido_m, extension, correo, facultad, password)
+                VALUES (:npesonal, :nombre, :apellido_p, :apellido_m, :extension, :correo, :facultad, :password)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            ':npesonal' => $npesonal,
+            ':nombre' => $nombre,
+            ':apellido_p' => $apellido_p,
+            ':apellido_m' => $apellido_m,
+            ':extension' => $extension,
+            ':correo' => $correo,
+            ':facultad' => $facultad,
+            ':password' => $hashed_password
+        ]);
+
+        // Redirigir o mostrar un mensaje de éxito
+        header('Location: login.php');
+        exit;
+    }
 }
 ?>
-
-
 
 <?php
 // Obtener las facultades disponibles para el menú desplegable
@@ -63,6 +71,11 @@ $facultades = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 <h4>Registro de Usuario</h4>
             </div>
             <div class="card-body">
+                <?php if (isset($warning)): ?>
+                    <div class="alert alert-warning">
+                        <?php echo $warning; ?>
+                    </div>
+                <?php endif; ?>
                 <form method="POST" action="register.php">
                     <div class="form-group">
                         <label for="npesonal">Número Personal</label>
