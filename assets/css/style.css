@@ -42,3 +42,19 @@ body {
     font-size: 1.2rem;
     padding: 10px 20px;
 }
+
+/*css de dashboard adm*/
+.dashboard-menu {
+    margin-top: 20px;
+}
+.dashboard-menu .card {
+    margin-bottom: 20px;
+}
+.navbar-brand img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+.navbar-nav .nav-item {
+    margin-left: 10px;
+}
