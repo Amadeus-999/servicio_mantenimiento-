@@ -58,7 +58,7 @@ $user_name = $_SESSION['user']['nombre'];
                             <i class="fas fa-chalkboard-teacher fa-2x"></i>
                             <h5 class="card-title">Docentes</h5>
                             <p class="card-text">Administrar los docentes.</p>
-                            <a href="docentes.php" class="btn btn-primary">Ir a Docentes</a>
+                            <a href="../admin/docente/docentes.php" class="btn btn-primary">Ir a Docentes</a>
                         </div>
                     </div>
                 </div>
