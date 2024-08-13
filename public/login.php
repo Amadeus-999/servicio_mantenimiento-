@@ -12,12 +12,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) {
-        // Verificar la contraseña
         if (password_verify($password, $user['password'])) {
-            // Iniciar sesión
             session_start();
             $_SESSION['user'] = $user;
-            header('Location: index.php');
+
+            // Ejemplo: si el número personal comienza con 'ADM_', redirigir a admin/index.php
+            if (strpos($npesonal, 'ADM1') === 0) {
+                header('Location: admin/index.php');
+            } else {
+                header('Location: index.php');
+            }
             exit;
         } else {
             $error = 'Contraseña incorrecta';
@@ -35,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <div class="container">
