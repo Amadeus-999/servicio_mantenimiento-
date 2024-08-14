@@ -18,7 +18,7 @@ $docentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="container mt-5">
         <div class="d-flex justify-content-between mb-3">
             <div>
-                <a href="agregar_docente.php" class="btn btn-success">Agregar Nuevo Docente</a>
+                <a href="add_docente.php" class="btn btn-success">Agregar Nuevo Docente</a>
                 <a href="../dashboard.php" class="btn btn-secondary">Inicio</a>
             </div>
             <form class="form-inline" method="GET" action="docentes.php">
