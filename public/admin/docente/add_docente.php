@@ -1,7 +1,6 @@
 <?php
 require_once '../../../config/database.php';
 
-// Obtener las facultades disponibles para el menú desplegable
 $sql = "SELECT facultad FROM t_facultad";
 $stmt = $pdo->query($sql);
 $facultades = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -15,17 +14,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $correo = $_POST['correo'];
     $facultad = $_POST['facultad'];
 
-    // Verificar si el número personal ya está registrado
     $check_sql = "SELECT * FROM t_docente WHERE npesonal = :npesonal";
     $check_stmt = $pdo->prepare($check_sql);
     $check_stmt->execute([':npesonal' => $npesonal]);
     $existing_user = $check_stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($existing_user) {
-        // Mostrar mensaje de error si el número personal ya está registrado
         $error = "El número personal ya está registrado.";
     } else {
-        // Insertar el nuevo docente en la base de datos
         $sql = "INSERT INTO t_docente (npesonal, nombre, apellido_p, apellido_m, extension, correo, facultad)
                 VALUES (:npesonal, :nombre, :apellido_p, :apellido_m, :extension, :correo, :facultad)";
         $stmt = $pdo->prepare($sql);
@@ -39,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':facultad' => $facultad
         ]);
 
-        // Redirigir o mostrar un mensaje de éxito
         header('Location: docentes.php');
         exit;
     }

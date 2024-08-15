@@ -1,19 +1,45 @@
 <?php
 require_once '../../../config/database.php';
 
-$sql = "SELECT npesonal, nombre, apellido_p, apellido_m, extension, correo, facultad FROM t_docente";
-$stmt = $pdo->query($sql);
-$docentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+require_once '../../../config/database.php';
+
+try {
+    // Verificar si hay un término de búsqueda
+    $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+    // Preparar la consulta SQL para incluir el filtro por número personal si hay una búsqueda
+    if ($search) {
+        $sql = "SELECT npesonal, nombre, apellido_p, apellido_m, extension, correo, facultad 
+                FROM t_docente 
+                WHERE npesonal LIKE :search";
+        $stmt = $pdo->prepare($sql);
+        $searchParam = "%$search%";
+        $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
+        $stmt->execute();
+    } else {
+        $sql = "SELECT npesonal, nombre, apellido_p, apellido_m, extension, correo, facultad 
+                FROM t_docente";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+    }
+
+    $docentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // Manejo de errores
+    echo "Error: " . $e->getMessage();
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Docentes</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
+
 <body>
     <div class="container mt-5">
         <div class="d-flex justify-content-between mb-3">
@@ -22,7 +48,7 @@ $docentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <a href="../dashboard.php" class="btn btn-secondary">Inicio</a>
             </div>
             <form class="form-inline" method="GET" action="docentes.php">
-                <input class="form-control mr-sm-2" type="search" placeholder="Buscar por nombre" aria-label="Buscar" name="search">
+                <input class="form-control mr-sm-2" type="search" placeholder="Buscar por nombre" aria-label="Buscar" name="search" value="<?php echo htmlspecialchars($search); ?>">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
             </form>
         </div>
