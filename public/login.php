@@ -16,9 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             session_start();
             $_SESSION['user'] = $user;
 
-            // Ejemplo: si el número personal comienza con 'ADM_', redirigir a admin/index.php
             if (strpos($npesonal, 'ADM1') === 0) {
-                header('Location: admin/index.php');
+                header('Location: admin/dashboard.php');
             } else {
                 header('Location: index.php');
             }
@@ -42,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
+    <!--  -->
     <div class="container">
         <div class="card mt-5">
             <div class="card-header text-center">
