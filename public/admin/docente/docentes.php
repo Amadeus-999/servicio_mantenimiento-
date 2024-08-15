@@ -1,5 +1,4 @@
 <?php
-require_once '../../../config/database.php';
 
 require_once '../../../config/database.php';
 
@@ -22,7 +21,7 @@ try {
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
     }
-
+                                        
     $docentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     // Manejo de errores
