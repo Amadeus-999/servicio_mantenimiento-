@@ -68,7 +68,7 @@ $user_name = $_SESSION['user']['nombre'];
                             <i class="fas fa-laptop fa-2x"></i>
                             <h5 class="card-title">Tipos de Equipos</h5>
                             <p class="card-text">Gestionar los tipos de equipos.</p>
-                            <a href="tipos_equipos.php" class="btn btn-primary">Ir a Tipos de Equipos</a>
+                            <a href="../admin/equipos/equipo.php" class="btn btn-primary">Ir a Tipos de Equipos</a>
                         </div>
                     </div>
                 </div>
