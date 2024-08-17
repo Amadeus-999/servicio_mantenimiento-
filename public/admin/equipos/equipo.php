@@ -36,6 +36,7 @@ try {
     <div class="container mt-5">
         <div class="d-flex justify-content-between mb-3">
             <a href="add_equipo.php" class="btn btn-success">Agregar Nuevo Tipo de Equipo</a>
+            <a href="../dashboard.php" class="btn btn-secondary">Inicio</a>
             <div>
                 <a href="?order=asc" class="btn order-btn <?php echo $order === 'ASC' ? 'active' : ''; ?>">ASC</a>
                 <a href="?order=desc" class="btn order-btn <?php echo $order === 'DESC' ? 'active' : ''; ?>">DESC</a>
