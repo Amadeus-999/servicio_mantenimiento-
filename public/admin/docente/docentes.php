@@ -3,28 +3,33 @@
 require_once '../../../config/database.php';
 
 try {
-    // Verificar si hay un término de búsqueda
     $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+    $order = isset($_GET['order']) ? $_GET['order'] : 'ASC';
 
-    // Preparar la consulta SQL para incluir el filtro por número personal si hay una búsqueda
+    // Validar que el parámetro de ordenamiento sea 'ASC' o 'DESC'
+    if (!in_array($order, ['ASC', 'DESC'])) {
+        $order = 'ASC';
+    }
+
     if ($search) {
         $sql = "SELECT npesonal, nombre, apellido_p, apellido_m, extension, correo, facultad 
                 FROM t_docente 
-                WHERE npesonal LIKE :search";
+                WHERE npesonal LIKE :search 
+                ORDER BY nombre $order";
         $stmt = $pdo->prepare($sql);
         $searchParam = "%$search%";
         $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
         $stmt->execute();
     } else {
         $sql = "SELECT npesonal, nombre, apellido_p, apellido_m, extension, correo, facultad 
-                FROM t_docente";
+                FROM t_docente 
+                ORDER BY nombre $order";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
     }
                                         
     $docentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    // Manejo de errores
     echo "Error: " . $e->getMessage();
 }
 ?>
@@ -37,6 +42,17 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Docentes</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .btn-order {
+            padding: 0.25rem 0.5rem; /* Tamaño más pequeño */
+            font-size: 0.875rem; /* Tamaño de fuente más pequeño */
+        }
+        .btn-order.active {
+            background-color: #28a745 !important; /* Color verde cuando está activo */
+            color: white !important;
+            border-color: #28a745 !important; /* Borde verde cuando está activo */
+        }
+    </style>
 </head>
 
 <body>
@@ -50,6 +66,13 @@ try {
                 <input class="form-control mr-sm-2" type="search" placeholder="Buscar por nombre" aria-label="Buscar" name="search" value="<?php echo htmlspecialchars($search); ?>">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
             </form>
+        </div>
+
+        <div class="d-flex justify-content-end mb-3">
+            <a href="docentes.php?order=ASC&search=<?php echo htmlspecialchars($search); ?>" 
+               class="btn btn-primary btn-order <?php echo ($order === 'ASC') ? 'active' : ''; ?>">A-Z</a>
+            <a href="docentes.php?order=DESC&search=<?php echo htmlspecialchars($search); ?>" 
+               class="btn btn-primary btn-order ml-2 <?php echo ($order === 'DESC') ? 'active' : ''; ?>">Z-A</a>
         </div>
 
         <table class="table table-bordered">
