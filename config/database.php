@@ -1,7 +1,7 @@
 <?php
 $host = 'localhost';
 $port = 3306;  
-$db = 'trabajo_social';
+$db = 'prueba';
 $user = 'root';
 $pass = '';
 $charset = 'utf8mb4';

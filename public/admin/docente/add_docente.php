@@ -1,9 +1,10 @@
 <?php
 require_once '../../../config/database.php';
 
-$sql = "SELECT facultad FROM t_facultad";
+// Obtener las facultades disponibles para el menú desplegable
+$sql = "SELECT id_facultad, facultad FROM t_facultad";
 $stmt = $pdo->query($sql);
-$facultades = $stmt->fetchAll(PDO::FETCH_COLUMN);
+$facultades = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $npesonal = $_POST['npesonal'];
@@ -12,8 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $apellido_m = $_POST['apellido_m'];
     $extension = $_POST['extension'];
     $correo = $_POST['correo'];
-    $facultad = $_POST['facultad'];
+    $id_facultad = $_POST['id_facultad'];  // Usar id_facultad
 
+    // Verificar si el número personal ya está registrado
     $check_sql = "SELECT * FROM t_docente WHERE npesonal = :npesonal";
     $check_stmt = $pdo->prepare($check_sql);
     $check_stmt->execute([':npesonal' => $npesonal]);
@@ -22,8 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($existing_user) {
         $error = "El número personal ya está registrado.";
     } else {
-        $sql = "INSERT INTO t_docente (npesonal, nombre, apellido_p, apellido_m, extension, correo, facultad)
-                VALUES (:npesonal, :nombre, :apellido_p, :apellido_m, :extension, :correo, :facultad)";
+        // Insertar el nuevo docente en la base de datos
+        $sql = "INSERT INTO t_docente (npesonal, nombre, apellido_p, apellido_m, extension, correo, id_facultad)
+                VALUES (:npesonal, :nombre, :apellido_p, :apellido_m, :extension, :correo, :id_facultad)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             ':npesonal' => $npesonal,
@@ -32,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':apellido_m' => $apellido_m,
             ':extension' => $extension,
             ':correo' => $correo,
-            ':facultad' => $facultad
+            ':id_facultad' => $id_facultad
         ]);
 
         header('Location: docentes.php');
@@ -88,11 +91,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <div class="form-group">
                         <label for="facultad"><i class="fas fa-university"></i> Facultad</label>
-                        <select class="form-control" id="facultad" name="facultad" required>
+                        <select class="form-control" id="facultad" name="id_facultad" required> <!-- Cambiar name a id_facultad -->
                             <option value="">Seleccionar Facultad</option>
                             <?php foreach ($facultades as $facultad): ?>
-                                <option value="<?php echo htmlspecialchars($facultad); ?>">
-                                    <?php echo htmlspecialchars($facultad); ?>
+                                <option value="<?php echo htmlspecialchars($facultad['id_facultad']); ?>"> <!-- Usar id_facultad -->
+                                    <?php echo htmlspecialchars($facultad['facultad']); ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
