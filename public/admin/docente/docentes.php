@@ -44,13 +44,13 @@ try {
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .btn-order {
-            padding: 0.25rem 0.5rem; /* Tamaño más pequeño */
-            font-size: 0.875rem; /* Tamaño de fuente más pequeño */
+            padding: 0.25rem 0.5rem; 
+            font-size: 0.875rem; 
         }
         .btn-order.active {
-            background-color: #28a745 !important; /* Color verde cuando está activo */
+            background-color: #28a745 !important;
             color: white !important;
-            border-color: #28a745 !important; /* Borde verde cuando está activo */
+            border-color: #28a745 !important; 
         }
     </style>
 </head>
@@ -63,7 +63,7 @@ try {
                 <a href="../dashboard.php" class="btn btn-secondary">Inicio</a>
             </div>
             <form class="form-inline" method="GET" action="docentes.php">
-                <input class="form-control mr-sm-2" type="search" placeholder="Buscar por nombre" aria-label="Buscar" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                <input class="form-control mr-sm-2" type="search" placeholder="Buscar por numero personal" aria-label="Buscar" name="search" value="<?php echo htmlspecialchars($search); ?>">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
             </form>
         </div>
