@@ -1,5 +1,4 @@
 <?php
-
 require_once '../../../config/database.php';
 
 try {
@@ -12,22 +11,24 @@ try {
     }
 
     if ($search) {
-        $sql = "SELECT npesonal, nombre, apellido_p, apellido_m, extension, correo, facultad 
-                FROM t_docente 
-                WHERE npesonal LIKE :search 
-                ORDER BY nombre $order";
+        $sql = "SELECT d.npesonal, d.nombre, d.apellido_p, d.apellido_m, d.extension, d.correo, f.facultad
+                FROM t_docente d
+                JOIN t_facultad f ON d.id_facultad = f.id_facultad
+                WHERE d.npesonal LIKE :search 
+                ORDER BY d.nombre $order";
         $stmt = $pdo->prepare($sql);
         $searchParam = "%$search%";
         $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
         $stmt->execute();
     } else {
-        $sql = "SELECT npesonal, nombre, apellido_p, apellido_m, extension, correo, facultad 
-                FROM t_docente 
-                ORDER BY nombre $order";
+        $sql = "SELECT d.npesonal, d.nombre, d.apellido_p, d.apellido_m, d.extension, d.correo, f.facultad
+                FROM t_docente d
+                JOIN t_facultad f ON d.id_facultad = f.id_facultad
+                ORDER BY d.nombre $order";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
     }
-                                        
+
     $docentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
@@ -63,7 +64,7 @@ try {
                 <a href="../dashboard.php" class="btn btn-secondary">Inicio</a>
             </div>
             <form class="form-inline" method="GET" action="docentes.php">
-                <input class="form-control mr-sm-2" type="search" placeholder="Buscar por numero personal" aria-label="Buscar" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                <input class="form-control mr-sm-2" type="search" placeholder="Buscar por número personal" aria-label="Buscar" name="search" value="<?php echo htmlspecialchars($search); ?>">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
             </form>
         </div>
@@ -113,3 +114,4 @@ try {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+

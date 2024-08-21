@@ -9,8 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $apellido_m = $_POST['apellido_m'];
     $extension = $_POST['extension'];
     $correo = $_POST['correo'];
-    $facultad = $_POST['facultad'];
-    $password = $_POST['password']; // Contraseña en texto plano
+    $id_facultad = $_POST['id_facultad'];  // Cambiar a id_facultad
+    $password = $_POST['password']; 
 
     // Verificar si el número personal ya existe
     $sql_check = "SELECT COUNT(*) FROM t_registro WHERE npesonal = :npesonal";
@@ -25,8 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         // Insertar el nuevo usuario en la base de datos
-        $sql = "INSERT INTO t_registro (npesonal, nombre, apellido_p, apellido_m, extension, correo, facultad, password)
-                VALUES (:npesonal, :nombre, :apellido_p, :apellido_m, :extension, :correo, :facultad, :password)";
+        $sql = "INSERT INTO t_registro (npesonal, nombre, apellido_p, apellido_m, extension, correo, id_facultad, password)
+                VALUES (:npesonal, :nombre, :apellido_p, :apellido_m, :extension, :correo, :id_facultad, :password)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             ':npesonal' => $npesonal,
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':apellido_m' => $apellido_m,
             ':extension' => $extension,
             ':correo' => $correo,
-            ':facultad' => $facultad,
+            ':id_facultad' => $id_facultad,
             ':password' => $hashed_password
         ]);
 
@@ -50,9 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Obtener las facultades disponibles para el menú desplegable
 require_once '../config/database.php';
 
-$sql = "SELECT facultad FROM t_facultad";
+$sql = "SELECT id_facultad, facultad FROM t_facultad";
 $stmt = $pdo->query($sql);
-$facultades = $stmt->fetchAll(PDO::FETCH_COLUMN);
+$facultades = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -103,10 +103,10 @@ $facultades = $stmt->fetchAll(PDO::FETCH_COLUMN);
                     </div>
                     <div class="form-group">
                         <label for="facultad">Facultad</label>
-                        <select class="form-control" id="facultad" name="facultad" required>
+                        <select class="form-control" id="facultad" name="id_facultad" required>
                             <?php foreach ($facultades as $facultad): ?>
-                                <option value="<?php echo htmlspecialchars($facultad); ?>">
-                                    <?php echo htmlspecialchars($facultad); ?>
+                                <option value="<?php echo htmlspecialchars($facultad['id_facultad']); ?>">
+                                    <?php echo htmlspecialchars($facultad['facultad']); ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
