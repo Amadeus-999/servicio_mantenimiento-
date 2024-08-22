@@ -89,7 +89,7 @@ $user_name = $_SESSION['user']['nombre'];
                             <i class="fas fa-school fa-2x"></i>
                             <h5 class="card-title">Facultades</h5>
                             <p class="card-text">Administrar las facultades.</p>
-                            <a href="facultades.php" class="btn btn-primary">Ir a Facultades</a>
+                            <a href="../admin/facultades/facultad.php" class="btn btn-primary">Ir a Facultades</a>
                         </div>
                     </div>
                 </div>
@@ -99,7 +99,7 @@ $user_name = $_SESSION['user']['nombre'];
                             <i class="fas fa-tag fa-2x"></i>
                             <h5 class="card-title">Marcas de Equipos</h5>
                             <p class="card-text">Gestionar las marcas de equipos.</p>
-                            <a href="marcas_equipos.php" class="btn btn-primary">Ir a Marcas de Equipos</a>
+                            <a href="../admin/marca_equipos/marca.php" class="btn btn-primary">Ir a Marcas de Equipos</a>
                         </div>
                     </div>
                 </div>
@@ -109,7 +109,7 @@ $user_name = $_SESSION['user']['nombre'];
                             <i class="fas fa-memory fa-2x"></i>
                             <h5 class="card-title">Memorias</h5>
                             <p class="card-text">Gestionar las memorias.</p>
-                            <a href="memorias.php" class="btn btn-primary">Ir a Memorias</a>
+                            <a href="../admin/memorias/memoria.php" class="btn btn-primary">Ir a Memorias</a>
                         </div>
                     </div>
                 </div>

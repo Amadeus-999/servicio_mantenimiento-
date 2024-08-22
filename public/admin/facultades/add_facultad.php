@@ -2,22 +2,22 @@
 require_once '../../../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $tipo_equipo = isset($_POST['tipo_equipo']) ? trim($_POST['tipo_equipo']) : '';
+    $facultad = isset($_POST['facultad']) ? trim($_POST['facultad']) : '';
 
-    if (!empty($tipo_equipo)) {
+    if (!empty($facultad)) {
         try {
-            $sql = "INSERT INTO t_tipo_equipo (tipo_equipo) VALUES (:tipo_equipo)";
+            $sql = "INSERT INTO t_facultad (facultad) VALUES (:facultad)";
             $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':tipo_equipo', $tipo_equipo, PDO::PARAM_STR);
+            $stmt->bindParam(':facultad', $facultad, PDO::PARAM_STR);
             $stmt->execute();
 
-            header("Location: equipo.php");
+            header("Location: facultad.php");
             exit();
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
         }
     } else {
-        $error = "El nombre del tipo de equipo no puede estar vacío.";
+        $error = "El nombre de la facultad no puede estar vacío.";
     }
 }
 ?>
@@ -28,27 +28,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Tipo de Equipo</title>
+    <title>Agregar Facultad</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Enlace a FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
     <div class="container mt-5">
-        <h2><i class="fas fa-plus-circle"></i> Agregar Nuevo Tipo de Equipo</h2>
+        <h2><i class="fas fa-university"></i> Agregar Nueva Facultad</h2>
         <?php if (isset($error)): ?>
             <div class="alert alert-danger">
                 <i class="fas fa-exclamation-circle"></i> <?php echo $error; ?>
             </div>
         <?php endif; ?>
-        <form method="POST" action="add_equipo.php">
+        <form method="POST" action="add_facultad.php">
             <div class="form-group">
-                <label for="tipo_equipo"><i class="fas fa-laptop"></i> Nombre del Tipo de Equipo</label>
-                <input type="text" class="form-control" id="tipo_equipo" name="tipo_equipo" required>
+                <label for="facultad"><i class="fas fa-building"></i> Nombre de la Facultad</label>
+                <input type="text" class="form-control" id="facultad" name="facultad" required>
             </div>
-            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Agregar</button>
-            <a href="equipo.php" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</a>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar</button>
+            <a href="facultad.php" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</a>
         </form>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

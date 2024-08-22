@@ -29,7 +29,7 @@ try {
 
     if ($search) {
         $sql = "SELECT * 
-                FROM alta_equipo 
+                FROM t_alta_equipo 
                 WHERE inventario LIKE :search
                 ORDER BY nombre_equipo $order";
         $stmt = $pdo->prepare($sql);
@@ -37,7 +37,7 @@ try {
         $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
     } else {
         $sql = "SELECT * 
-                FROM alta_equipo 
+                FROM t_alta_equipo 
                 ORDER BY nombre_equipo $order";
         $stmt = $pdo->prepare($sql);
     }
