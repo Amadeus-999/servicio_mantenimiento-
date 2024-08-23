@@ -47,13 +47,13 @@ $user_name = $_SESSION['user']['nombre'];
     </nav>
 
     <div class="container mt-5">
-        <div class="text-center mb-4">
+        <div class="text-center mb-5">
             <h1>Panel de Administración</h1>
         </div>
         <div class="dashboard-menu">
             <div class="row">
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card shadow-lg">
                         <div class="card-body text-center">
                             <i class="fas fa-chalkboard-teacher fa-2x"></i>
                             <h5 class="card-title">Docentes</h5>
@@ -63,7 +63,7 @@ $user_name = $_SESSION['user']['nombre'];
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card shadow-lg">
                         <div class="card-body text-center">
                             <i class="fas fa-laptop fa-2x"></i>
                             <h5 class="card-title">Tipos de Equipos</h5>
@@ -73,7 +73,7 @@ $user_name = $_SESSION['user']['nombre'];
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card shadow-lg">
                         <div class="card-body text-center">
                             <i class="fas fa-plus-circle fa-2x"></i>
                             <h5 class="card-title">Alta de Equipos</h5>
@@ -82,9 +82,8 @@ $user_name = $_SESSION['user']['nombre'];
                         </div>
                     </div>
                 </div>
-                <!-- Agrega más tarjetas aquí siguiendo el mismo formato -->
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card shadow-lg">
                         <div class="card-body text-center">
                             <i class="fas fa-school fa-2x"></i>
                             <h5 class="card-title">Facultades</h5>
@@ -94,7 +93,7 @@ $user_name = $_SESSION['user']['nombre'];
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card shadow-lg">
                         <div class="card-body text-center">
                             <i class="fas fa-tag fa-2x"></i>
                             <h5 class="card-title">Marcas de Equipos</h5>
@@ -104,7 +103,7 @@ $user_name = $_SESSION['user']['nombre'];
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card shadow-lg">
                         <div class="card-body text-center">
                             <i class="fas fa-memory fa-2x"></i>
                             <h5 class="card-title">Memorias</h5>
@@ -114,7 +113,7 @@ $user_name = $_SESSION['user']['nombre'];
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card shadow-lg">
                         <div class="card-body text-center">
                             <i class="fas fa-cogs fa-2x"></i>
                             <h5 class="card-title">Modelos de Equipos</h5>
@@ -124,7 +123,7 @@ $user_name = $_SESSION['user']['nombre'];
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card shadow-lg">
                         <div class="card-body text-center">
                             <i class="fas fa-microchip fa-2x"></i>
                             <h5 class="card-title">Procesadores</h5>
@@ -134,7 +133,7 @@ $user_name = $_SESSION['user']['nombre'];
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card shadow-lg">
                         <div class="card-body text-center">
                             <i class="fas fa-map-marker-alt fa-2x"></i>
                             <h5 class="card-title">Ubicaciones</h5>
@@ -144,7 +143,7 @@ $user_name = $_SESSION['user']['nombre'];
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card shadow-lg">
                         <div class="card-body text-center">
                             <i class="fas fa-tools fa-2x"></i>
                             <h5 class="card-title">Servicios</h5>

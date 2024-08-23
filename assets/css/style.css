@@ -17,6 +17,7 @@ body {
     background: #007bff;
     color: #fff;
     border-bottom: none;
+    
 }
 
 .btn-primary {
@@ -27,6 +28,7 @@ body {
 .cards {
     margin-top: 50px;
     padding: 20px;
+    
 }
 
 .btn-logout {
