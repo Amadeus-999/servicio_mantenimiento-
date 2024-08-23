@@ -30,8 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agregar Tipo de Equipo</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Enlace a FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/style_form.css">
+    <style>.button-container {text-align: center;}</style>
 </head>
 
 <body>
@@ -47,8 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label for="tipo_equipo"><i class="fas fa-laptop"></i> Nombre del Tipo de Equipo</label>
                 <input type="text" class="form-control" id="tipo_equipo" name="tipo_equipo" required>
             </div>
-            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Agregar</button>
-            <a href="equipo.php" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</a>
+            <div class="button-container">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Agregar</button>
+                <a href="equipo.php" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</a>
+            </div>
         </form>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
