@@ -118,7 +118,7 @@ $user_name = $_SESSION['user']['nombre'];
                             <i class="fas fa-cogs fa-2x"></i>
                             <h5 class="card-title">Modelos de Equipos</h5>
                             <p class="card-text">Administrar los modelos de equipos.</p>
-                            <a href="modelos_equipos.php" class="btn btn-primary">Ir a Modelos de Equipos</a>
+                            <a href="../admin/modelos/modelo.php" class="btn btn-primary">Ir a Modelos de Equipos</a>
                         </div>
                     </div>
                 </div>
