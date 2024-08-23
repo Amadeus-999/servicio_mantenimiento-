@@ -35,7 +35,7 @@ try {
     $serie_monitor = $_POST['serie_monitor'];
 
     // Preparar la consulta SQL
-    $sql = "INSERT INTO alta_equipo (
+    $sql = "INSERT INTO t_alta_equipo (
                 inventario, serie, activo, nombre_equipo, ubicacion, tipo_equipo, marca, modelo, procesador, 
                 memoria_total, disco_duro_1, marca_dd1, serie_dd1, modelo_dd1, disco_duro_2, marca_dd2, 
                 serie_dd2, modelo_dd2, marca_memoria_1, serie_memoria_1, marca_memoria_2, serie_memoria_2, 
