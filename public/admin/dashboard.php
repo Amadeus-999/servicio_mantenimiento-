@@ -129,7 +129,7 @@ $user_name = $_SESSION['user']['nombre'];
                             <i class="fas fa-microchip fa-2x"></i>
                             <h5 class="card-title">Procesadores</h5>
                             <p class="card-text">Gestionar los procesadores.</p>
-                            <a href="procesadores.php" class="btn btn-primary">Ir a Procesadores</a>
+                            <a href="../admin/procesadores/procesador.php" class="btn btn-primary">Ir a Procesadores</a>
                         </div>
                     </div>
                 </div>
@@ -139,7 +139,7 @@ $user_name = $_SESSION['user']['nombre'];
                             <i class="fas fa-map-marker-alt fa-2x"></i>
                             <h5 class="card-title">Ubicaciones</h5>
                             <p class="card-text">Administrar las ubicaciones.</p>
-                            <a href="ubicaciones.php" class="btn btn-primary">Ir a Ubicaciones</a>
+                            <a href="../admin/ubicaciones/ubicacion.php" class="btn btn-primary">Ir a Ubicaciones</a>
                         </div>
                     </div>
                 </div>
