@@ -4,14 +4,15 @@ require_once '../../../config/database.php';
 try {
     // Definir las consultas
     $queries = [
+        'modelo' => "SELECT id_modelo, modelo FROM t_modelo_equipo",
         'ubicacion' => "SELECT id_ubicacion, ubicacion FROM t_ubicacion",
         'tipo_equipo' => "SELECT id_tipo_equipo, tipo_equipo FROM t_tipo_equipo",
         'marca' => "SELECT id_marca, marca FROM t_marca_equipo",
         'memoria_total' => "SELECT id_memoria, memoria FROM t_memoria",
-        'modelo_dd' => "SELECT id_modelo, modelo FROM t_modelo_equipo WHERE id_tipo_equipo = 1", // Asumiendo que id_tipo_equipo = 1 para discos duros
+        'modelo_dd' => "SELECT id_modelo, modelo FROM t_modelo_equipo", // Modelo de disco duro
         'tipo_memoria' => "SELECT id_tmemoria, tp_memoria FROM tipo_memoria",
         'marca_monitor' => "SELECT id_marca, marca FROM t_marca_equipo",
-        'modelo_monitor' => "SELECT id_modelo, modelo FROM t_modelo_equipo WHERE id_tipo_equipo = 2", // Asumiendo que id_tipo_equipo = 2 para monitores
+        'modelo_monitor' => "SELECT id_modelo, modelo FROM t_modelo_equipo", // Modelo de monitor
         'procesador' => "SELECT id_procesador, procesador FROM t_procesador"
     ];
 
@@ -44,14 +45,19 @@ try {
 
     $stmt->execute();
     $equipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if (!$equipos) {
+        throw new Exception("No se encontraron equipos o hubo un error en la consulta.");
+    }
 } catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
+    echo "Error en la base de datos: " . $e->getMessage();
+} catch (Exception $e) {
+    echo "Error general: " . $e->getMessage();
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -63,14 +69,12 @@ try {
             font-size: 0.8rem;
             margin-left: 5px;
         }
-
         .order-btn.active {
             background-color: #28a745;
             color: white;
         }
     </style>
 </head>
-
 <body>
     <div class="container mt-5">
         <div class="d-flex justify-content-between mb-3">
@@ -104,41 +108,45 @@ try {
                     <th>Serie DD1</th>
                     <th>Modelo DD1</th>
                     <th>Disco Duro 2</th>
+                    <th>Marca DD2</th>
+                    <th>Serie DD2</th>
+                    <th>Modelo DD2</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if ($equipos): ?>
+                <?php if (isset($equipos) && $equipos): ?>
                     <?php foreach ($equipos as $equipo): ?>
                         <tr>
                             <td><?php echo htmlspecialchars($equipo['inventario']); ?></td>
                             <td><?php echo htmlspecialchars($equipo['serie']); ?></td>
                             <td><?php echo htmlspecialchars($equipo['activo']); ?></td>
                             <td><?php echo htmlspecialchars($equipo['nombre_equipo']); ?></td>
-                            <td><?php echo isset($data['ubicacion'][$equipo['id_ubicacion']]['ubicacion']) ? htmlspecialchars($data['ubicacion'][$equipo['id_ubicacion']]['ubicacion']) : 'No disponible'; ?></td>
-                            <td><?php echo isset($data['tipo_equipo'][$equipo['id_tipo_equipo']]['tipo_equipo']) ? htmlspecialchars($data['tipo_equipo'][$equipo['id_tipo_equipo']]['tipo_equipo']) : 'No disponible'; ?></td>
-                            <td><?php echo isset($data['marca'][$equipo['id_marca']]['marca']) ? htmlspecialchars($data['marca'][$equipo['id_marca']]['marca']) : 'No disponible'; ?></td>
-                            <td><?php echo isset($data['modelo_dd'][$equipo['id_modelo_dd']]['modelo']) ? htmlspecialchars($data['modelo_dd'][$equipo['id_modelo_dd']]['modelo']) : 'No disponible'; ?></td>
-                            <td><?php echo isset($data['procesador'][$equipo['id_procesador']]['procesador']) ? htmlspecialchars($data['procesador'][$equipo['id_procesador']]['procesador']) : 'No disponible'; ?></td>
-                            <td><?php echo isset($data['memoria_total'][$equipo['id_memoria_total']]['memoria']) ? htmlspecialchars($data['memoria_total'][$equipo['id_memoria_total']]['memoria']) : 'No disponible'; ?></td>
+                            <td><?php echo isset($data['ubicacion'][$equipo['ubicacion']]) ? htmlspecialchars($data['ubicacion'][$equipo['ubicacion']]['ubicacion']) : 'No disponible'; ?></td>
+                            <td><?php echo isset($data['tipo_equipo'][$equipo['tipo_equipo']]) ? htmlspecialchars($data['tipo_equipo'][$equipo['tipo_equipo']]['tipo_equipo']) : 'No disponible'; ?></td>
+                            <td><?php echo isset($data['marca'][$equipo['marca']]) ? htmlspecialchars($data['marca'][$equipo['marca']]['marca']) : 'No disponible'; ?></td>
+                            <td><?php echo isset($data['modelo'][$equipo['modelo']]) ? htmlspecialchars($data['modelo'][$equipo['modelo']]['modelo']) : 'No disponible'; ?></td>
+                            <td><?php echo isset($data['procesador'][$equipo['procesador']]) ? htmlspecialchars($data['procesador'][$equipo['procesador']]['procesador']) : 'No disponible'; ?></td>
+                            <td><?php echo isset($data['memoria_total'][$equipo['memoria_total']]) ? htmlspecialchars($data['memoria_total'][$equipo['memoria_total']]['memoria']) : 'No disponible'; ?></td>
                             <td><?php echo htmlspecialchars($equipo['disco_duro_1']); ?></td>
-                            <td><?php echo isset($data['marca'][$equipo['id_marca_dd1']]['marca']) ? htmlspecialchars($data['marca'][$equipo['id_marca_dd1']]['marca']) : 'No disponible'; ?></td>
+                            <td><?php echo isset($data['marca'][$equipo['marca_dd1']]) ? htmlspecialchars($data['marca'][$equipo['marca_dd1']]['marca']) : 'No disponible'; ?></td>
                             <td><?php echo htmlspecialchars($equipo['serie_dd1']); ?></td>
-                            <td><?php echo isset($data['modelo_dd'][$equipo['id_modelo_dd1']]['modelo']) ? htmlspecialchars($data['modelo_dd'][$equipo['id_modelo_dd1']]['modelo']) : 'No disponible'; ?></td>
+                            <td><?php echo isset($data['modelo_dd'][$equipo['modelo_dd1']]) ? htmlspecialchars($data['modelo_dd'][$equipo['modelo_dd1']]['modelo']) : 'No disponible'; ?></td>
                             <td><?php echo htmlspecialchars($equipo['disco_duro_2']); ?></td>
+                            <td><?php echo isset($data['marca'][$equipo['marca_dd2']]) ? htmlspecialchars($data['marca'][$equipo['marca_dd2']]['marca']) : 'No disponible'; ?></td>
+                            <td><?php echo htmlspecialchars($equipo['serie_dd2']); ?></td>
+                            <td><?php echo isset($data['modelo_dd'][$equipo['modelo_dd2']]) ? htmlspecialchars($data['modelo_dd'][$equipo['modelo_dd2']]['modelo']) : 'No disponible'; ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="15" class="text-center">No se encontraron equipos</td>
+                        <td colspan="17" class="text-center">No se encontraron equipos</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
         </table>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-
-</html>
+       <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+       <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+   </body>
+   </html>
