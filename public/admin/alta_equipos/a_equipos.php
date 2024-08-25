@@ -1,24 +1,5 @@
 <?php
-$host = 'localhost';
-$port = 3306;
-$db = 'trabajo_social';
-$user = 'root';
-$pass = '';
-$charset = 'utf8mb4';
-
-$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
-$options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
-];
-
-try {
-    $pdo = new PDO($dsn, $user, $pass, $options);
-} catch (\PDOException $e) {
-    echo "Error en la base de datos: " . $e->getMessage();
-    exit;
-}
+require_once '../../../config/database.php';
 
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $order = isset($_GET['order']) && strtolower($_GET['order']) === 'desc' ? 'DESC' : 'ASC';
@@ -131,45 +112,49 @@ try {
 
     $stmt->execute();
     $equipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    if (!$equipos) {
-        throw new Exception("No se encontraron equipos o hubo un error en la consulta.");
-    }
 } catch (PDOException $e) {
     echo "Error en la base de datos: " . $e->getMessage();
 } catch (Exception $e) {
     echo "Error general: " . $e->getMessage();
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alta de Equipos</title>
+    <title>Gestión de Equipos</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .order-btn {
+            padding: 2px 10px;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+        .order-btn.active {
+            background-color: #28a745;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-5">
-    <h1 class="mb-4">Listado de Equipos</h1>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between mb-3">
+            <a href="add_a_equipos.php" class="btn btn-success">Agregar Nuevo Equipo</a>
+            <div>
+                <a href="?order=asc<?php echo $search ? '&search=' . htmlspecialchars($search) : ''; ?>" class="btn order-btn <?php echo $order === 'ASC' ? 'active' : ''; ?>">ASC</a>
+                <a href="?order=desc<?php echo $search ? '&search=' . htmlspecialchars($search) : ''; ?>" class="btn order-btn <?php echo $order === 'DESC' ? 'active' : ''; ?>">DESC</a>
+            </div>
+        </div>
 
-    <form method="get" class="mb-4">
-        <div class="form-group">
-            <label for="search">Buscar por Inventario:</label>
-            <input type="text" id="search" name="search" class="form-control" value="<?php echo htmlspecialchars($search); ?>">
-        </div>
-        <div class="form-group">
-            <label for="order">Ordenar por:</label>
-            <select id="order" name="order" class="form-control">
-                <option value="asc" <?php echo $order === 'ASC' ? 'selected' : ''; ?>>Ascendente</option>
-                <option value="desc" <?php echo $order === 'DESC' ? 'selected' : ''; ?>>Descendente</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Buscar</button>
-    </form>
-        <!-- Tabla de Equipos -->
-        <table class="table table-striped">
-        <thead>
+        <form class="form-inline mb-3" method="GET" action="">
+            <input class="form-control mr-sm-2" type="search" placeholder="Buscar por inventario" aria-label="Buscar" name="search" value="<?php echo htmlspecialchars($search); ?>">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+        </form>
+
+        <table class="table table-bordered">
+            <thead class="thead-dark">
             <tr>
                 <th>Inventario</th>
                 <th>Serie</th>
@@ -200,8 +185,8 @@ try {
                 <th>Modelo Monitor</th>
                 <th>Serie Monitor</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             <?php if (isset($equipos) && count($equipos) > 0): ?>
                 <?php foreach ($equipos as $equipo): ?>
                     <tr>
@@ -234,24 +219,17 @@ try {
                         <td><?php echo htmlspecialchars($equipo['modelo_monitor_nombre']); ?></td>
                         <td><?php echo htmlspecialchars($equipo['serie_monitor']); ?></td>
                     </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="27">No se encontraron equipos.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-</div>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
-
-
-
-
-
-
-
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="17" class="text-center">No se encontraron equipos</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+       <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+       <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+   </body>
+   </html>
