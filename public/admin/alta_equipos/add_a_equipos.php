@@ -3,7 +3,6 @@ require_once '../../../config/database.php';
 
 try {
     // Consultas para obtener datos de la base de datos
-    // Fetching necessary data for the dropdowns
     $ubicaciones = $pdo->query("SELECT id_ubicacion, ubicacion FROM t_ubicacion")->fetchAll();
     $tipos_equipo = $pdo->query("SELECT id_tipo_equipo, tipo_equipo FROM t_tipo_equipo")->fetchAll();
     $marcas = $pdo->query("SELECT id_marca, marca FROM t_marca_equipo")->fetchAll();
@@ -41,31 +40,31 @@ try {
                 ':serie' => $_POST['serie'],
                 ':activo' => $_POST['activo'],
                 ':nombre_equipo' => $_POST['nombre_equipo'],
-                ':ubicacion' => $_POST['ubicacion'],
-                ':tipo_equipo' => $_POST['tipo_equipo'],
-                ':marca' => $_POST['marca'],
-                ':modelo' => $_POST['modelo'],
-                ':procesador' => $_POST['procesador'],
-                ':memoria_total' => $_POST['memoria_total'],
+                ':ubicacion' => $_POST['ubicacion'] !== '' ? $_POST['ubicacion'] : null,
+                ':tipo_equipo' => $_POST['tipo_equipo'] !== '' ? $_POST['tipo_equipo'] : null,
+                ':marca' => $_POST['marca'] !== '' ? $_POST['marca'] : null,
+                ':modelo' => $_POST['modelo'] !== '' ? $_POST['modelo'] : null,
+                ':procesador' => $_POST['procesador'] !== '' ? $_POST['procesador'] : null,
+                ':memoria_total' => $_POST['memoria_total'] !== '' ? $_POST['memoria_total'] : null,
                 ':disco_duro_1' => $_POST['disco_duro_1'],
-                ':marca_dd1' => $_POST['marca_dd1'],
+                ':marca_dd1' => $_POST['marca_dd1'] !== '' ? $_POST['marca_dd1'] : null,
                 ':serie_dd1' => $_POST['serie_dd1'],
-                ':modelo_dd1' => $_POST['modelo_dd1'],
+                ':modelo_dd1' => $_POST['modelo_dd1'] !== '' ? $_POST['modelo_dd1'] : null,
                 ':disco_duro_2' => $_POST['disco_duro_2'],
-                ':marca_dd2' => $_POST['marca_dd2'],
+                ':marca_dd2' => $_POST['marca_dd2'] !== '' ? $_POST['marca_dd2'] : null,
                 ':serie_dd2' => $_POST['serie_dd2'],
-                ':modelo_dd2' => $_POST['modelo_dd2'],
-                ':marca_memoria_1' => $_POST['marca_memoria_1'],
+                ':modelo_dd2' => $_POST['modelo_dd2'] !== '' ? $_POST['modelo_dd2'] : null,
+                ':marca_memoria_1' => $_POST['marca_memoria_1'] !== '' ? $_POST['marca_memoria_1'] : null,
                 ':serie_memoria_1' => $_POST['serie_memoria_1'],
-                ':marca_memoria_2' => $_POST['marca_memoria_2'],
+                ':marca_memoria_2' => $_POST['marca_memoria_2'] !== '' ? $_POST['marca_memoria_2'] : null,
                 ':serie_memoria_2' => $_POST['serie_memoria_2'],
-                ':marca_memoria_3' => $_POST['marca_memoria_3'],
+                ':marca_memoria_3' => $_POST['marca_memoria_3'] !== '' ? $_POST['marca_memoria_3'] : null,
                 ':serie_memoria_3' => $_POST['serie_memoria_3'],
-                ':marca_memoria_4' => $_POST['marca_memoria_4'],
+                ':marca_memoria_4' => $_POST['marca_memoria_4'] !== '' ? $_POST['marca_memoria_4'] : null,
                 ':serie_memoria_4' => $_POST['serie_memoria_4'],
-                ':tipo_memoria' => $_POST['tipo_memoria'],
-                ':marca_monitor' => $_POST['marca_monitor'],
-                ':modelo_monitor' => $_POST['modelo_monitor'],
+                ':tipo_memoria' => $_POST['tipo_memoria'] !== '' ? $_POST['tipo_memoria'] : null,
+                ':marca_monitor' => $_POST['marca_monitor'] !== '' ? $_POST['marca_monitor'] : null,
+                ':modelo_monitor' => $_POST['modelo_monitor'] !== '' ? $_POST['modelo_monitor'] : null,
                 ':serie_monitor' => $_POST['serie_monitor'],
                 ':foto_disco_duro' => $foto_disco_duro,
                 ':foto_memoria' => $foto_memoria
@@ -151,7 +150,6 @@ try {
             </div>
             <div class="form-group">
                 <label for="ubicacion">Ubicación:</label>
-                
                 <select class="form-control" id="ubicacion" name="ubicacion" required>
                     <?php foreach ($ubicaciones as $ubicacion): ?>
                         <option value="<?php echo $ubicacion['id_ubicacion']; ?>"><?php echo $ubicacion['ubicacion']; ?></option>
@@ -205,6 +203,7 @@ try {
             <div class="form-group">
                 <label for="marca_dd1">Marca DD1:</label>
                 <select class="form-control" id="marca_dd1" name="marca_dd1">
+                <option value="">Ninguna</option>
                     <?php foreach ($marcas as $marca): ?>
                         <option value="<?php echo $marca['id_marca']; ?>"><?php echo $marca['marca']; ?></option>
                     <?php endforeach; ?>
@@ -217,6 +216,7 @@ try {
             <div class="form-group">
                 <label for="modelo_dd1">Modelo DD1:</label>
                 <select class="form-control" id="modelo_dd1" name="modelo_dd1">
+                <option value="">Ninguna</option>
                     <?php foreach ($modelos as $modelo): ?>
                         <option value="<?php echo $modelo['id_modelo']; ?>"><?php echo $modelo['modelo']; ?></option>
                     <?php endforeach; ?>
@@ -229,6 +229,7 @@ try {
             <div class="form-group">
                 <label for="marca_dd2">Marca DD2:</label>
                 <select class="form-control" id="marca_dd2" name="marca_dd2">
+                <option value="">Ninguna</option>
                     <?php foreach ($marcas as $marca): ?>
                         <option value="<?php echo $marca['id_marca']; ?>"><?php echo $marca['marca']; ?></option>
                     <?php endforeach; ?>
@@ -241,6 +242,7 @@ try {
             <div class="form-group">
                 <label for="modelo_dd2">Modelo DD2:</label>
                 <select class="form-control" id="modelo_dd2" name="modelo_dd2">
+                <option value="">Ninguna</option>
                     <?php foreach ($modelos as $modelo): ?>
                         <option value="<?php echo $modelo['id_modelo']; ?>"><?php echo $modelo['modelo']; ?></option>
                     <?php endforeach; ?>
@@ -249,6 +251,7 @@ try {
             <div class="form-group">
                 <label for="marca_memoria_1">Marca Memoria 1:</label>
                 <select class="form-control" id="marca_memoria_1" name="marca_memoria_1">
+                <option value="">Ninguna</option>
                     <?php foreach ($marcas as $marca): ?>
                         <option value="<?php echo $marca['id_marca']; ?>"><?php echo $marca['marca']; ?></option>
                     <?php endforeach; ?>
@@ -261,6 +264,7 @@ try {
             <div class="form-group">
                 <label for="marca_memoria_2">Marca Memoria 2:</label>
                 <select class="form-control" id="marca_memoria_2" name="marca_memoria_2">
+                <option value="">Ninguna</option>
                     <?php foreach ($marcas as $marca): ?>
                         <option value="<?php echo $marca['id_marca']; ?>"><?php echo $marca['marca']; ?></option>
                     <?php endforeach; ?>
@@ -273,6 +277,7 @@ try {
             <div class="form-group">
                 <label for="marca_memoria_3">Marca Memoria 3:</label>
                 <select class="form-control" id="marca_memoria_3" name="marca_memoria_3">
+                <option value="">Ninguna</option>
                     <?php foreach ($marcas as $marca): ?>
                         <option value="<?php echo $marca['id_marca']; ?>"><?php echo $marca['marca']; ?></option>
                     <?php endforeach; ?>
@@ -285,6 +290,7 @@ try {
             <div class="form-group">
                 <label for="marca_memoria_4">Marca Memoria 4:</label>
                 <select class="form-control" id="marca_memoria_4" name="marca_memoria_4">
+                <option value="">Ninguna</option>
                     <?php foreach ($marcas as $marca): ?>
                         <option value="<?php echo $marca['id_marca']; ?>"><?php echo $marca['marca']; ?></option>
                     <?php endforeach; ?>
@@ -305,6 +311,7 @@ try {
             <div class="form-group">
                 <label for="marca_monitor">Marca Monitor:</label>
                 <select class="form-control" id="marca_monitor" name="marca_monitor">
+                <option value="">Ninguna</option>
                     <?php foreach ($marcas as $marca): ?>
                         <option value="<?php echo $marca['id_marca']; ?>"><?php echo $marca['marca']; ?></option>
                     <?php endforeach; ?>
@@ -313,6 +320,7 @@ try {
             <div class="form-group">
                 <label for="modelo_monitor">Modelo Monitor:</label>
                 <select class="form-control" id="modelo_monitor" name="modelo_monitor">
+                <option value="">Ninguna</option>
                     <?php foreach ($modelos as $modelo): ?>
                         <option value="<?php echo $modelo['id_modelo']; ?>"><?php echo $modelo['modelo']; ?></option>
                     <?php endforeach; ?>
