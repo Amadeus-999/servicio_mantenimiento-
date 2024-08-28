@@ -152,7 +152,6 @@ try {
                 <a href="?order=desc<?php echo $search ? '&search=' . htmlspecialchars($search) : ''; ?>" class="btn order-btn <?php echo $order === 'DESC' ? 'active' : ''; ?>">DESC</a>
             </div>
         </div>
-
         <form class="form-inline mb-3" method="GET" action="">
             <input class="form-control mr-sm-2" type="search" placeholder="Buscar por inventario" aria-label="Buscar" name="search" value="<?php echo htmlspecialchars($search); ?>">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
