@@ -151,6 +151,7 @@ try {
             </div>
             <div class="form-group">
                 <label for="ubicacion">Ubicación:</label>
+                
                 <select class="form-control" id="ubicacion" name="ubicacion" required>
                     <?php foreach ($ubicaciones as $ubicacion): ?>
                         <option value="<?php echo $ubicacion['id_ubicacion']; ?>"><?php echo $ubicacion['ubicacion']; ?></option>

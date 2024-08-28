@@ -119,6 +119,7 @@ try {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -135,6 +136,9 @@ try {
         .order-btn.active {
             background-color: #28a745;
             color: white;
+        }
+        .table-responsive {
+            overflow-x: auto;
         }
     </style>
 </head>
@@ -153,83 +157,86 @@ try {
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
         </form>
 
-        <table class="table table-bordered">
-            <thead class="thead-dark">
-            <tr>
-                <th>Inventario</th>
-                <th>Serie</th>
-                <th>Activo</th>
-                <th>Nombre del Equipo</th>
-                <th>Ubicación</th>
-                <th>Tipo de Equipo</th>
-                <th>Marca</th>
-                <th>Modelo</th>
-                <th>Procesador</th>
-                <th>Memoria Total</th>
-                <th>Disco Duro 1</th>
-                <th>Marca DD1</th>
-                <th>Modelo DD1</th>
-                <th>Disco Duro 2</th>
-                <th>Marca DD2</th>
-                <th>Modelo DD2</th>
-                <th>Marca Memoria 1</th>
-                <th>Serie Memoria 1</th>
-                <th>Marca Memoria 2</th>
-                <th>Serie Memoria 2</th>
-                <th>Marca Memoria 3</th>
-                <th>Serie Memoria 3</th>
-                <th>Marca Memoria 4</th>
-                <th>Serie Memoria 4</th>
-                <th>Tipo de Memoria</th>
-                <th>Marca Monitor</th>
-                <th>Modelo Monitor</th>
-                <th>Serie Monitor</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php if (isset($equipos) && count($equipos) > 0): ?>
-                <?php foreach ($equipos as $equipo): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($equipo['inventario']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['serie']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['activo']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['nombre_equipo']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['ubicacion_nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['tipo_equipo_nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['marca_nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['modelo_nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['procesador_nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['memoria_total_nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['disco_duro_1']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['marca_dd1_nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['modelo_dd1_nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['disco_duro_2']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['marca_dd2_nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['modelo_dd2_nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['marca_memoria_1_nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['serie_memoria_1']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['marca_memoria_2_nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['serie_memoria_2']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['marca_memoria_3_nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['serie_memoria_3']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['marca_memoria_4_nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['serie_memoria_4']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['tipo_memoria_nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['marca_monitor']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['modelo_monitor_nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($equipo['serie_monitor']); ?></td>
-                    </tr>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Inventario</th>
+                    <th>Serie</th>
+                    <th>Activo</th>
+                    <th>Nombre del Equipo</th>
+                    <th>Ubicación</th>
+                    <th>Tipo de Equipo</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Procesador</th>
+                    <th>Memoria Total</th>
+                    <th>Disco Duro 1</th>
+                    <th>Marca DD1</th>
+                    <th>Modelo DD1</th>
+                    <th>Disco Duro 2</th>
+                    <th>Marca DD2</th>
+                    <th>Modelo DD2</th>
+                    <th>Marca Memoria 1</th>
+                    <th>Serie Memoria 1</th>
+                    <th>Marca Memoria 2</th>
+                    <th>Serie Memoria 2</th>
+                    <th>Marca Memoria 3</th>
+                    <th>Serie Memoria 3</th>
+                    <th>Marca Memoria 4</th>
+                    <th>Serie Memoria 4</th>
+                    <th>Tipo de Memoria</th>
+                    <th>Marca Monitor</th>
+                    <th>Modelo Monitor</th>
+                    <th>Serie Monitor</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php if (isset($equipos) && count($equipos) > 0): ?>
+                    <?php foreach ($equipos as $equipo): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($equipo['inventario']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['serie']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['activo']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['nombre_equipo']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['ubicacion_nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['tipo_equipo_nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['marca_nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['modelo_nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['procesador_nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['memoria_total_nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['disco_duro_1']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['marca_dd1_nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['modelo_dd1_nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['disco_duro_2']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['marca_dd2_nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['modelo_dd2_nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['marca_memoria_1_nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['serie_memoria_1']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['marca_memoria_2_nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['serie_memoria_2']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['marca_memoria_3_nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['serie_memoria_3']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['marca_memoria_4_nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['serie_memoria_4']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['tipo_memoria_nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['marca_monitor']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['modelo_monitor_nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($equipo['serie_monitor']); ?></td>
+                        </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="17" class="text-center">No se encontraron equipos</td>
+                        <td colspan="28" class="text-center">No se encontraron equipos</td>
                     </tr>
                 <?php endif; ?>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
-       <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-       <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-   </body>
-   </html>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
