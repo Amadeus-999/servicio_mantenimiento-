@@ -357,7 +357,6 @@ try {
                     </div>
                 </div>
             </div>
-
             <button type="submit" class="btn btn-success btn-block"><i class="fas fa-save"></i> Guardar</button>
             <a href="a_equipos.php" class="btn btn-secondary btn-block"><i class="fas fa-arrow-left"></i>Volver</a>
         </form>
@@ -366,5 +365,4 @@ try {
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-
 </html>
