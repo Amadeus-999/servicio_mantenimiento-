@@ -1,13 +1,12 @@
 <?php
 require_once '../config/database.php';
 
-session_start(); // Asegúrate de iniciar la sesión al principio
+session_start(); 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $npesonal = $_POST['npesonal'];
     $password = $_POST['password'];
 
-    // Buscar el usuario por el número personal
     $sql = "SELECT * FROM t_registro WHERE npesonal = :npesonal";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([':npesonal' => $npesonal]);
@@ -15,15 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($user) {
         if (password_verify($password, $user['password'])) {
-            // Almacenar solo los datos necesarios en la sesión
             $_SESSION['user'] = [
-                'id' => $user['id'], // Asegúrate de que 'id' esté disponible en el array del usuario
+                'id' => $user['id'], 
                 'npesonal' => $user['npesonal'],
                 'nombre' => $user['nombre'],
-                // Agrega otros campos necesarios según sea necesario
             ];
 
-            // Redirigir según el tipo de usuario
             if (strpos($npesonal, 'ADM1') === 0) {
                 header('Location: admin/dashboard.php');
             } else {

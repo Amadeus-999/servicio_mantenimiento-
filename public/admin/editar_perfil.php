@@ -2,7 +2,6 @@
 session_start();
 require_once '../../config/database.php';
 
-// Consulta para obtener las facultades
 $sql = "SELECT id_facultad, facultad FROM t_facultad";
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
@@ -15,7 +14,6 @@ if (!isset($_GET['npesonal'])) {
 
 $npesonal = $_GET['npesonal'];
 
-// Buscar el usuario por el número personal
 $sql = "SELECT * FROM t_registro WHERE npesonal = :npesonal";
 $stmt = $pdo->prepare($sql);
 $stmt->bindParam(':npesonal', $npesonal);
@@ -26,7 +24,6 @@ if (!$user) {
     die("No se encontró el usuario con el número personal especificado.");
 }
 
-// Manejar la actualización del perfil
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = $_POST['nombre'];
     $apellido_p = $_POST['apellido_p'];
