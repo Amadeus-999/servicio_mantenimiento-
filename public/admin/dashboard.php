@@ -38,7 +38,8 @@ $user_name = $_SESSION['user']['nombre'];
                         <i class="fas fa-user"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="editar_perfil.php">Editar Perfil</a>
+                    <a class="dropdown-item" href="editar_perfil.php?npesonal=<?php echo urlencode($_SESSION['user']['npesonal']); ?>">Editar Perfil</a>
+
                         <a class="dropdown-item" href="../logout.php">Cerrar Sesión</a>
                     </div>
                 </li>
