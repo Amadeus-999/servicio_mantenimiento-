@@ -51,7 +51,7 @@ try {
             </div>
         </div>
 
-        <table class="table table-bordered">
+        <table class="table table-striped">
             <thead class="thead-dark">
                 <tr>
                     <th>Modelo</th>

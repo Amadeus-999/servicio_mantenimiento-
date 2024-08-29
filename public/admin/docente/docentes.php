@@ -76,7 +76,7 @@ try {
                class="btn btn-primary btn-order ml-2 <?php echo ($order === 'DESC') ? 'active' : ''; ?>">Z-A</a>
         </div>
 
-        <table class="table table-bordered">
+        <table class="table table-striped">
             <thead class="thead-dark">
                 <tr>
                     <th>Número Personal</th>

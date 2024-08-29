@@ -10,7 +10,7 @@ try {
             JOIN t_docente d ON r.id_docente = d.id 
             WHERE r.inventario LIKE :search
             ORDER BY r.fecha_reportada $order";
-    
+
     $stmt = $pdo->prepare($sql);
 
     $searchParam = "%$search%";
@@ -19,7 +19,6 @@ try {
     $stmt->execute();
 
     $reportes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
 }
@@ -33,27 +32,29 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Reportes</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .order-btn {
-            padding: 0.25rem 0.5rem; 
-            font-size: 0.875rem; 
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
         }
+
         .order-btn.active {
             background-color: #28a745 !important;
             color: white !important;
-            border-color: #28a745 !important; 
-        }
-        .short-input {
-            width: 200px; 
+            border-color: #28a745 !important;
         }
 
+        .short-input {
+            width: 200px;
+        }
     </style>
 </head>
 
 <body>
     <div class="container mt-5">
         <div class="d-flex justify-content-between mb-3">
-            <a href="add_facultad.php" class="btn btn-success">Agregar Nueva Facultad</a>
+            <a href="g_reporte.php" class="btn btn-success">Agregar Nueva Facultad</a>
             <a href="../dashboard.php" class="btn btn-secondary">Inicio</a>
             <div>
                 <a href="?order=ASC" class="btn order-btn <?php echo $order === 'ASC' ? 'active' : ''; ?>">ASC</a>
@@ -67,7 +68,7 @@ try {
         </form>
 
         <table class="table table-striped">
-            <thead>
+            <thead class="thead-dark">
                 <tr>
                     <th>ID Reporte</th>
                     <th>Inventario</th>
@@ -100,4 +101,5 @@ try {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

@@ -158,7 +158,7 @@ try {
         </form>
 
         <div class="table-responsive">
-            <table class="table table-bordered">
+            <table class="table table-striped">
                 <thead class="thead-dark">
                 <tr>
                     <th>Inventario</th>
