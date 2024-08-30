@@ -1,9 +1,12 @@
 <?php
 require '../../../config/database.php';
 
-if (isset($_GET['inventario'])) {
+if (isset($_GET['inventario']) && isset($_GET['npesonal'])) {
     $inventario = $_GET['inventario'];
-    $stmt = $pdo->prepare("
+    $npesonal = $_GET['npesonal'];
+
+    // Consulta para obtener los datos del equipo
+    $stmt1 = $pdo->prepare("
         SELECT a.*, 
                m1.marca AS marca_dd1, 
                m2.marca AS marca_dd2,
@@ -37,8 +40,17 @@ if (isset($_GET['inventario'])) {
         LEFT JOIN t_modelo_equipo mo7 ON a.modelo_monitor = mo7.id_modelo
         LEFT JOIN tipo_memoria tm ON a.tipo_memoria = tm.id_tmemoria
         WHERE a.inventario = ?");
-    $stmt->execute([$inventario]);
-    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt1->execute([$inventario]);
+    $data_equipo = $stmt1->fetch(PDO::FETCH_ASSOC);
+
+    // Consulta para obtener los datos del solicitante
+    $stmt2 = $pdo->prepare("SELECT * FROM t_docente WHERE npesonal = ?");
+    $stmt2->execute([$npesonal]);
+    $data_solicitante = $stmt2->fetch(PDO::FETCH_ASSOC);
+
+    // Combinar ambos resultados
+    $data = array_merge($data_equipo, $data_solicitante);
+
     echo json_encode($data);
 }
 ?>

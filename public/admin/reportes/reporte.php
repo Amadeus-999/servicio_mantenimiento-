@@ -54,7 +54,7 @@ try {
 <body>
     <div class="container mt-5">
         <div class="d-flex justify-content-between mb-3">
-            <a href="g_reporte.php" class="btn btn-success">Generar un Reporte</a>
+            <a href="g_reportes.php" class="btn btn-success">Generar un Reporte</a>
             <a href="../dashboard.php" class="btn btn-secondary">Inicio</a>
             <div>
                 <a href="?order=ASC" class="btn order-btn <?php echo $order === 'ASC' ? 'active' : ''; ?>">ASC</a>
