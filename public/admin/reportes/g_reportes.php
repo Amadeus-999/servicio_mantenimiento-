@@ -470,7 +470,7 @@ if (isset($_GET['inventario'])) {
                         $('#apellido_m').val(docente.apellido_m);
                         $('#correo').val(docente.correo);
                         $('#extension').val(docente.extension);
-                        $('#facultad').val(docente.id_facultad);
+                        $('#facultad').val(docente.facultad);
                     }
                 });
 
