@@ -1,5 +1,7 @@
 <?php
 require '../../../config/database.php';
+
+$mensaje = isset($_GET['mensaje']) ? htmlspecialchars($_GET['mensaje']) : '';
 $docente = null;
 if (isset($_GET['npesonal'])) {
     $npesonal = $_GET['npesonal'];
@@ -16,9 +18,7 @@ if ($docente) {
     // Manejo del caso cuando $docente es null
     $nombre_solicitante = 'Docente no encontrado'; // O cualquier mensaje predeterminado que prefieras
 }
-echo '<pre>';
-print_r($docente);
-echo '</pre>';
+
 
 
 if (isset($_GET['inventario'])) {
@@ -107,7 +107,13 @@ if (isset($_GET['inventario'])) {
 </head>
 
 <body>
+<?php if ($mensaje): ?>
+            <div class="alert alert-info">
+                <?php echo $mensaje; ?>
+            </div>
+        <?php endif; ?>
     <div class="container">
+
         <form action="guardar_reporte.php" method="POST">
             <div class="header-logo">
                 <img src="../../../assets/images/logo.webp" alt="Logo de la Institución">
@@ -451,22 +457,22 @@ if (isset($_GET['inventario'])) {
             $('#npesonal').on('change', function() {
                 var npesonal = $(this).val();
                 $.ajax({
-    url: 'cargar_solicitante.php',
-    type: 'GET',
-    data: {
-        npesonal: npesonal
-    },
-    success: function(response) {
-        console.log(response); // Verifica la respuesta aquí
-        var docente = JSON.parse(response);
-        $('#nombre').val(docente.nombre);
-        $('#apellido_p').val(docente.apellido_p);
-        $('#apellido_m').val(docente.apellido_m);
-        $('#correo').val(docente.correo);
-        $('#extension').val(docente.extension);
-        $('#facultad').val(docente.id_facultad);
-    }
-});
+                    url: 'cargar_solicitante.php',
+                    type: 'GET',
+                    data: {
+                        npesonal: npesonal
+                    },
+                    success: function(response) {
+                        console.log(response); // Verifica la respuesta aquí
+                        var docente = JSON.parse(response);
+                        $('#nombre').val(docente.nombre);
+                        $('#apellido_p').val(docente.apellido_p);
+                        $('#apellido_m').val(docente.apellido_m);
+                        $('#correo').val(docente.correo);
+                        $('#extension').val(docente.extension);
+                        $('#facultad').val(docente.id_facultad);
+                    }
+                });
 
             });
 

@@ -24,7 +24,7 @@ try {
 
     // Preparar y ejecutar la consulta
     $sql = "INSERT INTO t_reporte (inventario, fecha_reportada, falla_reportada, reparacion, id_docente) VALUES (:inventario, NOW(), :falla_reportada, :reparacion, :id_docente)";
-    
+
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':inventario', $inventario, PDO::PARAM_INT);
     $stmt->bindParam(':falla_reportada', $falla_reportada);
@@ -33,12 +33,13 @@ try {
 
     // Ejecutar la consulta
     $stmt->execute();
-    
-    echo "Reporte guardado correctamente.";
-} catch (PDOException $e) {
-    echo "Error al guardar el reporte: " . $e->getMessage();
-} catch (Exception $e) {
-    echo "Error: " . $e->getMessage();
-}
-?>
 
+    header("Location: reporte.php?mensaje=Reporte guardado correctamente.");
+    exit();
+} catch (PDOException $e) {
+    header("Location: reporte.php?mensaje=Error al guardar el reporte: " . urlencode($e->getMessage()));
+    exit();
+} catch (Exception $e) {
+    header("Location: reporte.php?mensaje=Error: " . urlencode($e->getMessage()));
+    exit();
+}
