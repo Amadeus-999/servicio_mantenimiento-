@@ -1,0 +1,33 @@
+/* Estilos para el formulario */
+.container {
+    margin-top: 20px;
+}
+
+.form-control {
+    margin-bottom: 10px;
+}
+
+.section-title {
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.horizontal-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.form-group {
+    flex: 1;
+}
+
+.divider {
+    border-top: 1px solid #000;
+    margin: 10px 0;
+}
+
+.btn-primary {
+    margin-top: 20px;
+}
