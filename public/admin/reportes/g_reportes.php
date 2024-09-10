@@ -129,9 +129,9 @@ if (isset($_GET['inventario'])) {
                         <input type="date" class="form-control" id="fecha_reportada" value="<?php echo date('Y-m-d'); ?>" readonly>
                     </div>
                     <div class="form-group">
-    <label for="numero_reporte">Número de Reporte</label>
-    <input type="text" class="form-control" id="numero_reporte" name="numero_reporte" value="<?php echo $ultimo_numero_reporte; ?>" readonly>
-</div>
+                        <label for="numero_reporte">Número de Reporte</label>
+                        <input type="text" class="form-control" id="numero_reporte" name="numero_reporte" value="<?php echo $ultimo_numero_reporte; ?>" readonly>
+                    </div>
 
                 </div>
             </div>
@@ -421,25 +421,17 @@ if (isset($_GET['inventario'])) {
                 <label for="acciones_realizadas">Acciones</label>
                 <textarea class="form-control" id="acciones_realizadas" name="acciones_realizadas" rows="4"></textarea>
             </div>
-
+            <!-- FIRMAS DE RECIBIDO -->
             <div class="signature-section">
                 <div class="form-group">
-                    <label for="nombre">Nombre del Solicitante</label>
-                    <input type="text" class="form-control" id="nombre" name="nombre" value="<?php echo $docente['nombre'] ?? ''; ?>" readonly>
-                </div>
+                    <input type="text" class="form-control" id="nombre1" name="nombre1" value="<?php echo $docente['nombre'] ?? ''; ?>" readonly>
+                    <hr>
+                    <label>Nombre y Firma de Recibido</label>
 
-                <div class="form-group">
-                    <label for="firma_recibido">Nombre y Firma de Recibido</label>
-                    <div class="signature-box">
-                        <input type="text" class="form-control" id="firma_recibido" name="firma_recibido">
-                        <hr>
-                        <label>Nombre y Firma de Recibido</label>
-                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="entregado">Entregado</label>
                     <div class="signature-box">
-                        <input type="text" class="form-control" id="entregado" name="entregado">
+                        <input type="text" class="form-control" id="entregado" name="entregado" value="<?php echo $docente['nombre'] ?? ''; ?>" readonly>
                         <hr>
                         <label>Entregado</label>
                     </div>
@@ -477,6 +469,9 @@ if (isset($_GET['inventario'])) {
                         $('#correo').val(docente.correo);
                         $('#extension').val(docente.extension);
                         $('#facultad').val(docente.facultad);
+                        $('#nombre1').val(docente.nombre);
+                        $('#entregado').val(docente.nombre);
+
                     }
                 });
 
