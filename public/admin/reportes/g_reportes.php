@@ -4,6 +4,7 @@ require '../../../config/database.php';
 $mensaje = isset($_GET['mensaje']) ? htmlspecialchars($_GET['mensaje']) : '';
 $docente = null;
 $numero_reporte = null;
+
 // Obtener el próximo número de reporte
 $stmt_numero_reporte = $pdo->query("SELECT MAX(id_reporte) AS last_report FROM t_reporte");
 $row = $stmt_numero_reporte->fetch(PDO::FETCH_ASSOC);
@@ -22,34 +23,6 @@ if ($docente) {
 } else {
     // Manejo del caso cuando $docente es null
     $nombre_solicitante = 'Docente no encontrado'; // O cualquier mensaje predeterminado que prefieras
-}
-
-
-
-if (isset($_GET['inventario'])) {
-    $inventario = $_GET['inventario'];
-
-    // Obtener datos del equipo con las relaciones necesarias
-
-    $stmt_equipo->execute([$inventario]);
-    $equipo = $stmt_equipo->fetch(PDO::FETCH_ASSOC);
-
-
-    // Obtener datos para los desplegables
-    $stmt_tipo = $pdo->query("SELECT * FROM t_tipo_equipo");
-    $tipos = $stmt_tipo->fetchAll(PDO::FETCH_ASSOC);
-
-    $stmt_marca = $pdo->query("SELECT * FROM t_marca_equipo");
-    $marcas = $stmt_marca->fetchAll(PDO::FETCH_ASSOC);
-
-    $stmt_modelo = $pdo->query("SELECT * FROM t_modelo_equipo");
-    $modelos = $stmt_modelo->fetchAll(PDO::FETCH_ASSOC);
-
-    $stmt_ubicacion = $pdo->query("SELECT * FROM t_ubicacion");
-    $ubicaciones = $stmt_ubicacion->fetchAll(PDO::FETCH_ASSOC);
-
-    $stmt_tipo_memoria = $pdo->query("SELECT * FROM tipo_memoria");
-    $tipos_memoria = $stmt_tipo_memoria->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 
@@ -136,6 +109,7 @@ if (isset($_GET['inventario'])) {
                 </div>
             </div>
 
+            <!-- APARTADO  DE DATOS SOIICITANTE-->
             <div class="section-title">Datos del Solicitante</div>
             <div class="horizontal-group">
                 <div class="form-group">
@@ -187,23 +161,13 @@ if (isset($_GET['inventario'])) {
                 </div>
                 <div class="form-group">
                     <label for="tipo_equipo">Tipo de Equipo</label>
-                    <select class="form-control" id="tipo_equipo" name="tipo_equipo">
-                        <?php foreach ($tipos as $tipo): ?>
-                            <option value="<?php echo $tipo['id_tipo_equipo']; ?>" <?php echo ($equipo['tipo_equipo'] == $tipo['id_tipo_equipo']) ? 'selected' : ''; ?>>
-                                <?php echo $tipo['tipo_equipo']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <input type="text" class="form-control" id="tipo_equipo" name="tipo_equipo" readonly>
                 </div>
+
+
                 <div class="form-group">
-                    <label for="marca_dd1">Marca</label>
-                    <select class="form-control" id="marca_dd1" name="marca_dd1">
-                        <?php foreach ($marcas as $marca): ?>
-                            <option value="<?php echo $marca['id_marca']; ?>" <?php echo ($equipo['marca_dd1'] == $marca['id_marca']) ? 'selected' : ''; ?>>
-                                <?php echo $marca['marca']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <label for="marca">Marca</label>
+                    <input type="text" class="form-control" id="marca" name="marca" value="<?php echo $equipo['marca'] ?? ''; ?>" readonly>
                 </div>
                 <div class="form-group">
                     <label for="modelo">Modelo</label>
@@ -488,8 +452,11 @@ if (isset($_GET['inventario'])) {
                     },
                     success: function(response) {
                         var equipo = JSON.parse(response);
-                        $('#serie').val(equipo.serie);
+                        /* section acti */
                         $('#activo').val(equipo.activo);
+
+                        /* section ser-t_equi-marc-mode-ubi*/
+                        $('#num_serie').val(equipo.serie);
                         $('#tipo_equipo').val(equipo.tipo_equipo);
                         $('#marca').val(equipo.marca);
                         $('#modelo').val(equipo.modelo);

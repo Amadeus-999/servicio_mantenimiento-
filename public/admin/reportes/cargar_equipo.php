@@ -1,5 +1,6 @@
 <?php
 // conectar a la base de datos
+// conectar a la base de datos
 require '../../../config/database.php';
 
 if (isset($_GET['inventario'])) {
@@ -22,9 +23,10 @@ if (isset($_GET['inventario'])) {
         LEFT JOIN t_ubicacion u ON e.ubicacion = u.id_ubicacion
         LEFT JOIN t_modelo_equipo mo ON e.modelo = mo.id_modelo
         WHERE e.inventario = ?
-");
+    ");
     $stmt->execute([$inventario]);
     $equipo = $stmt->fetch(PDO::FETCH_ASSOC);
     echo json_encode($equipo);
 }
+
 ?>
