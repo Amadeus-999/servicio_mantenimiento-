@@ -3,6 +3,11 @@ require '../../../config/database.php';
 
 $mensaje = isset($_GET['mensaje']) ? htmlspecialchars($_GET['mensaje']) : '';
 $docente = null;
+$numero_reporte = null;
+// Obtener el próximo número de reporte
+$stmt_numero_reporte = $pdo->query("SELECT MAX(id_reporte) AS last_report FROM t_reporte");
+$row = $stmt_numero_reporte->fetch(PDO::FETCH_ASSOC);
+$ultimo_numero_reporte = $row['last_report'] ? $row['last_report'] + 1 : 1;
 if (isset($_GET['npesonal'])) {
     $npesonal = $_GET['npesonal'];
 
@@ -24,10 +29,11 @@ if ($docente) {
 if (isset($_GET['inventario'])) {
     $inventario = $_GET['inventario'];
 
-    // Obtener datos del equipo
-    $stmt_equipo = $pdo->prepare("SELECT * FROM t_alta_equipo WHERE inventario = ?");
+    // Obtener datos del equipo con las relaciones necesarias
+
     $stmt_equipo->execute([$inventario]);
     $equipo = $stmt_equipo->fetch(PDO::FETCH_ASSOC);
+
 
     // Obtener datos para los desplegables
     $stmt_tipo = $pdo->query("SELECT * FROM t_tipo_equipo");
@@ -107,11 +113,11 @@ if (isset($_GET['inventario'])) {
 </head>
 
 <body>
-<?php if ($mensaje): ?>
-            <div class="alert alert-info">
-                <?php echo $mensaje; ?>
-            </div>
-        <?php endif; ?>
+    <?php if ($mensaje): ?>
+        <div class="alert alert-info">
+            <?php echo $mensaje; ?>
+        </div>
+    <?php endif; ?>
     <div class="container">
 
         <form action="guardar_reporte.php" method="POST">
@@ -123,9 +129,10 @@ if (isset($_GET['inventario'])) {
                         <input type="date" class="form-control" id="fecha_reportada" value="<?php echo date('Y-m-d'); ?>" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="numero_reporte">Número de Reporte</label>
-                        <input type="text" class="form-control" id="numero_reporte" name="numero_reporte">
-                    </div>
+    <label for="numero_reporte">Número de Reporte</label>
+    <input type="text" class="form-control" id="numero_reporte" name="numero_reporte" value="<?php echo $ultimo_numero_reporte; ?>" readonly>
+</div>
+
                 </div>
             </div>
 
@@ -189,10 +196,10 @@ if (isset($_GET['inventario'])) {
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="marca">Marca</label>
-                    <select class="form-control" id="marca" name="marca">
+                    <label for="marca_dd1">Marca</label>
+                    <select class="form-control" id="marca_dd1" name="marca_dd1">
                         <?php foreach ($marcas as $marca): ?>
-                            <option value="<?php echo $marca['id_marca']; ?>" <?php echo ($equipo['marca'] == $marca['id_marca']) ? 'selected' : ''; ?>>
+                            <option value="<?php echo $marca['id_marca']; ?>" <?php echo ($equipo['marca_dd1'] == $marca['id_marca']) ? 'selected' : ''; ?>>
                                 <?php echo $marca['marca']; ?>
                             </option>
                         <?php endforeach; ?>
@@ -417,9 +424,8 @@ if (isset($_GET['inventario'])) {
 
             <div class="signature-section">
                 <div class="form-group">
-                    <label for="nombre_solicitante">Nombre del Solicitante</label>
-                    <input type="text" class="form-control" id="nombre_solicitante" name="nombre_solicitante"
-                        value="<?php echo isset($docente) ? $docente['nombre'] . ' ' . $docente['apellido_p'] . ' ' . $docente['apellido_m'] : 'Docente no encontrado'; ?>" readonly>
+                    <label for="nombre">Nombre del Solicitante</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" value="<?php echo $docente['nombre'] ?? ''; ?>" readonly>
                 </div>
 
                 <div class="form-group">
