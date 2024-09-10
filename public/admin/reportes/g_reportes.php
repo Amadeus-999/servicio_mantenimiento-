@@ -3,6 +3,12 @@ require '../../../config/database.php';
 
 $mensaje = isset($_GET['mensaje']) ? htmlspecialchars($_GET['mensaje']) : '';
 $docente = null;
+$numero_reporte = null;
+
+// Obtener el próximo número de reporte
+$stmt_numero_reporte = $pdo->query("SELECT MAX(id_reporte) AS last_report FROM t_reporte");
+$row = $stmt_numero_reporte->fetch(PDO::FETCH_ASSOC);
+$ultimo_numero_reporte = $row['last_report'] ? $row['last_report'] + 1 : 1;
 if (isset($_GET['npesonal'])) {
     $npesonal = $_GET['npesonal'];
 
@@ -17,33 +23,6 @@ if ($docente) {
 } else {
     // Manejo del caso cuando $docente es null
     $nombre_solicitante = 'Docente no encontrado'; // O cualquier mensaje predeterminado que prefieras
-}
-
-
-
-if (isset($_GET['inventario'])) {
-    $inventario = $_GET['inventario'];
-
-    // Obtener datos del equipo
-    $stmt_equipo = $pdo->prepare("SELECT * FROM t_alta_equipo WHERE inventario = ?");
-    $stmt_equipo->execute([$inventario]);
-    $equipo = $stmt_equipo->fetch(PDO::FETCH_ASSOC);
-
-    // Obtener datos para los desplegables
-    $stmt_tipo = $pdo->query("SELECT * FROM t_tipo_equipo");
-    $tipos = $stmt_tipo->fetchAll(PDO::FETCH_ASSOC);
-
-    $stmt_marca = $pdo->query("SELECT * FROM t_marca_equipo");
-    $marcas = $stmt_marca->fetchAll(PDO::FETCH_ASSOC);
-
-    $stmt_modelo = $pdo->query("SELECT * FROM t_modelo_equipo");
-    $modelos = $stmt_modelo->fetchAll(PDO::FETCH_ASSOC);
-
-    $stmt_ubicacion = $pdo->query("SELECT * FROM t_ubicacion");
-    $ubicaciones = $stmt_ubicacion->fetchAll(PDO::FETCH_ASSOC);
-
-    $stmt_tipo_memoria = $pdo->query("SELECT * FROM tipo_memoria");
-    $tipos_memoria = $stmt_tipo_memoria->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 
@@ -107,11 +86,11 @@ if (isset($_GET['inventario'])) {
 </head>
 
 <body>
-<?php if ($mensaje): ?>
-            <div class="alert alert-info">
-                <?php echo $mensaje; ?>
-            </div>
-        <?php endif; ?>
+    <?php if ($mensaje): ?>
+        <div class="alert alert-info">
+            <?php echo $mensaje; ?>
+        </div>
+    <?php endif; ?>
     <div class="container">
 
         <form action="guardar_reporte.php" method="POST">
@@ -124,11 +103,13 @@ if (isset($_GET['inventario'])) {
                     </div>
                     <div class="form-group">
                         <label for="numero_reporte">Número de Reporte</label>
-                        <input type="text" class="form-control" id="numero_reporte" name="numero_reporte">
+                        <input type="text" class="form-control" id="numero_reporte" name="numero_reporte" value="<?php echo $ultimo_numero_reporte; ?>" readonly>
                     </div>
+
                 </div>
             </div>
 
+            <!-- APARTADO  DE DATOS SOIICITANTE-->
             <div class="section-title">Datos del Solicitante</div>
             <div class="horizontal-group">
                 <div class="form-group">
@@ -176,47 +157,23 @@ if (isset($_GET['inventario'])) {
             <div class="horizontal-group">
                 <div class="form-group">
                     <label for="num_serie">Número de Serie</label>
-                    <input type="text" class="form-control" id="num_serie" name="num_serie" value="<?php echo $equipo['serie'] ?? ''; ?>" readonly>
+                    <input type="text" class="form-control" id="num_serie" name="num_serie" readonly>
                 </div>
                 <div class="form-group">
                     <label for="tipo_equipo">Tipo de Equipo</label>
-                    <select class="form-control" id="tipo_equipo" name="tipo_equipo">
-                        <?php foreach ($tipos as $tipo): ?>
-                            <option value="<?php echo $tipo['id_tipo_equipo']; ?>" <?php echo ($equipo['tipo_equipo'] == $tipo['id_tipo_equipo']) ? 'selected' : ''; ?>>
-                                <?php echo $tipo['tipo_equipo']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <input type="text" class="form-control" id="tipo_equipo" name="tipo_equipo" readonly>
                 </div>
                 <div class="form-group">
                     <label for="marca">Marca</label>
-                    <select class="form-control" id="marca" name="marca">
-                        <?php foreach ($marcas as $marca): ?>
-                            <option value="<?php echo $marca['id_marca']; ?>" <?php echo ($equipo['marca'] == $marca['id_marca']) ? 'selected' : ''; ?>>
-                                <?php echo $marca['marca']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <input type="text" class="form-control" id="marca" name="marca" readonly>
                 </div>
                 <div class="form-group">
                     <label for="modelo">Modelo</label>
-                    <select class="form-control" id="modelo" name="modelo">
-                        <?php foreach ($modelos as $modelo): ?>
-                            <option value="<?php echo $modelo['id_modelo']; ?>" <?php echo ($equipo['modelo'] == $modelo['id_modelo']) ? 'selected' : ''; ?>>
-                                <?php echo $modelo['modelo']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <input type="text" class="form-control" id="modelo" name="modelo" readonly>
                 </div>
                 <div class="form-group">
                     <label for="ubicacion">Ubicación</label>
-                    <select class="form-control" id="ubicacion" name="ubicacion">
-                        <?php foreach ($ubicaciones as $ubicacion): ?>
-                            <option value="<?php echo $ubicacion['id_ubicacion']; ?>" <?php echo ($equipo['ubicacion'] == $ubicacion['id_ubicacion']) ? 'selected' : ''; ?>>
-                                <?php echo $ubicacion['ubicacion']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <input type="text" class="form-control" id="ubicacion" name="ubicacion" readonly>
                 </div>
             </div>
 
@@ -224,31 +181,19 @@ if (isset($_GET['inventario'])) {
             <div class="horizontal-group">
                 <div class="form-group">
                     <label for="capacidad_dd1">Capacidad</label>
-                    <input type="text" class="form-control" id="capacidad_dd1" name="capacidad_dd1" value="<?php echo $equipo['disco_duro_1'] ?? ''; ?>" readonly>
+                    <input type="text" class="form-control" id="capacidad_dd1" name="capacidad_dd1" readonly>
                 </div>
                 <div class="form-group">
                     <label for="marca_dd1">Marca</label>
-                    <select class="form-control" id="marca_dd1" name="marca_dd1">
-                        <?php foreach ($marcas as $marca): ?>
-                            <option value="<?php echo $marca['id_marca']; ?>" <?php echo ($equipo['marca_dd1'] == $marca['id_marca']) ? 'selected' : ''; ?>>
-                                <?php echo $marca['marca']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <input type="text" class="form-control" id="marca_dd1" name="marca_dd1" readonly>
                 </div>
                 <div class="form-group">
                     <label for="serie_dd1">Número de Serie</label>
-                    <input type="text" class="form-control" id="serie_dd1" name="serie_dd1" value="<?php echo $equipo['serie_dd1'] ?? ''; ?>" readonly>
+                    <input type="text" class="form-control" id="serie_dd1" name="serie_dd1" readonly>
                 </div>
                 <div class="form-group">
                     <label for="modelo_dd1">Modelo</label>
-                    <select class="form-control" id="modelo_dd1" name="modelo_dd1">
-                        <?php foreach ($modelos as $modelo): ?>
-                            <option value="<?php echo $modelo['id_modelo']; ?>" <?php echo ($equipo['modelo_dd1'] == $modelo['id_modelo']) ? 'selected' : ''; ?>>
-                                <?php echo $modelo['modelo']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <input type="text" class="form-control" id="modelo_dd1" name="modelo_dd1" readonly>
                 </div>
             </div>
 
@@ -260,13 +205,7 @@ if (isset($_GET['inventario'])) {
                 </div>
                 <div class="form-group">
                     <label for="marca_dd2">Marca</label>
-                    <select class="form-control" id="marca_dd2" name="marca_dd2">
-                        <?php foreach ($marcas as $marca): ?>
-                            <option value="<?php echo $marca['id_marca']; ?>" <?php echo ($equipo['marca_dd2'] == $marca['id_marca']) ? 'selected' : ''; ?>>
-                                <?php echo $marca['marca']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <input type="text" class="form-control" id="marca_dd2" name="marca_dd2" readonly>
                 </div>
                 <div class="form-group">
                     <label for="serie_dd2">Número de Serie</label>
@@ -274,13 +213,7 @@ if (isset($_GET['inventario'])) {
                 </div>
                 <div class="form-group">
                     <label for="modelo_dd2">Modelo</label>
-                    <select class="form-control" id="modelo_dd2" name="modelo_dd2">
-                        <?php foreach ($modelos as $modelo): ?>
-                            <option value="<?php echo $modelo['id_modelo']; ?>" <?php echo ($equipo['modelo_dd2'] == $modelo['id_modelo']) ? 'selected' : ''; ?>>
-                                <?php echo $modelo['modelo']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <input type="text" class="form-control" id="modelo_dd2" name="modelo_dd2" readonly>
                 </div>
             </div>
 
@@ -291,17 +224,11 @@ if (isset($_GET['inventario'])) {
                     <div class="horizontal-group">
                         <div class="form-group">
                             <label for="marca_memoria1">Marca</label>
-                            <select class="form-control" id="marca_memoria1" name="marca_memoria1">
-                                <?php foreach ($marcas as $marca): ?>
-                                    <option value="<?php echo $marca['id_marca']; ?>" <?php echo ($equipo['marca_memoria_1'] == $marca['id_marca']) ? 'selected' : ''; ?>>
-                                        <?php echo $marca['marca']; ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+                            <input type="text" class="form-control" id="marca_memoria1" name="marca_memoria1" readonly>
                         </div>
                         <div class="form-group">
                             <label for="serie_memoria1">Número de Serie</label>
-                            <input type="text" class="form-control" id="serie_memoria1" name="serie_memoria1" value="<?php echo $equipo['serie_memoria_1'] ?? ''; ?>" readonly>
+                            <input type="text" class="form-control" id="serie_memoria1" name="serie_memoria1" readonly>
                         </div>
                     </div>
                 </div>
@@ -310,17 +237,11 @@ if (isset($_GET['inventario'])) {
                     <div class="horizontal-group">
                         <div class="form-group">
                             <label for="marca_memoria2">Marca</label>
-                            <select class="form-control" id="marca_memoria2" name="marca_memoria2">
-                                <?php foreach ($marcas as $marca): ?>
-                                    <option value="<?php echo $marca['id_marca']; ?>" <?php echo ($equipo['marca_memoria_2'] == $marca['id_marca']) ? 'selected' : ''; ?>>
-                                        <?php echo $marca['marca']; ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+                            <input type="text" class="form-control" id="marca_memoria2" name="marca_memoria2" readonly>
                         </div>
                         <div class="form-group">
                             <label for="serie_memoria2">Número de Serie</label>
-                            <input type="text" class="form-control" id="serie_memoria2" name="serie_memoria2" value="<?php echo $equipo['serie_memoria_2'] ?? ''; ?>" readonly>
+                            <input type="text" class="form-control" id="serie_memoria2" name="serie_memoria2" readonly>
                         </div>
                     </div>
                 </div>
@@ -329,17 +250,11 @@ if (isset($_GET['inventario'])) {
                     <div class="horizontal-group">
                         <div class="form-group">
                             <label for="marca_memoria3">Marca</label>
-                            <select class="form-control" id="marca_memoria3" name="marca_memoria3">
-                                <?php foreach ($marcas as $marca): ?>
-                                    <option value="<?php echo $marca['id_marca']; ?>" <?php echo ($equipo['marca_memoria_3'] == $marca['id_marca']) ? 'selected' : ''; ?>>
-                                        <?php echo $marca['marca']; ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+                            <input type="text" class="form-control" id="marca_memoria3" name="marca_memoria3" readonly>
                         </div>
                         <div class="form-group">
                             <label for="serie_memoria3">Número de Serie</label>
-                            <input type="text" class="form-control" id="serie_memoria3" name="serie_memoria3" value="<?php echo $equipo['serie_memoria_3'] ?? ''; ?>" readonly>
+                            <input type="text" class="form-control" id="serie_memoria3" name="serie_memoria3" readonly>
                         </div>
                     </div>
                 </div>
@@ -348,13 +263,7 @@ if (isset($_GET['inventario'])) {
                     <div class="horizontal-group">
                         <div class="form-group">
                             <label for="marca_memoria4">Marca</label>
-                            <select class="form-control" id="marca_memoria4" name="marca_memoria4">
-                                <?php foreach ($marcas as $marca): ?>
-                                    <option value="<?php echo $marca['id_marca']; ?>" <?php echo ($equipo['marca_memoria_4'] == $marca['id_marca']) ? 'selected' : ''; ?>>
-                                        <?php echo $marca['marca']; ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+                            <input type="text" class="form-control" id="marca_memoria4" name="marca_memoria4" readonly>
                         </div>
                         <div class="form-group">
                             <label for="serie_memoria4">Número de Serie</label>
@@ -362,13 +271,7 @@ if (isset($_GET['inventario'])) {
                         </div>
                         <div class="form-group">
                             <label for="tipo_memoria">Tipo de Memoria</label>
-                            <select class="form-control" id="tipo_memoria" name="tipo_memoria">
-                                <?php foreach ($tipos_memoria as $tipo_memoria): ?>
-                                    <option value="<?php echo $tipo_memoria['id_tmemoria']; ?>" <?php echo ($equipo['tipo_memoria'] == $tipo_memoria['id_tmemoria']) ? 'selected' : ''; ?>>
-                                        <?php echo $tipo_memoria['tp_memoria']; ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+                            <input type="text" class="form-control" id="tipo_memoria" name="tipo_memoria" readonly>
                         </div>
                     </div>
                 </div>
@@ -379,27 +282,15 @@ if (isset($_GET['inventario'])) {
             <div class="horizontal-group">
                 <div class="form-group">
                     <label for="marca_monitor">Marca</label>
-                    <select class="form-control" id="marca_monitor" name="marca_monitor">
-                        <?php foreach ($marcas as $marca): ?>
-                            <option value="<?php echo $marca['id_marca']; ?>" <?php echo ($equipo['marca_monitor'] == $marca['id_marca']) ? 'selected' : ''; ?>>
-                                <?php echo $marca['marca']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <input type="text" class="form-control" id="marca_monitor" name="marca_monitor" readonly>
                 </div>
                 <div class="form-group">
                     <label for="serie_monitor">Número de Serie</label>
-                    <input type="text" class="form-control" id="serie_monitor" name="serie_monitor" value="<?php echo $equipo['serie_monitor'] ?? ''; ?>" readonly>
+                    <input type="text" class="form-control" id="serie_monitor" name="serie_monitor" readonly>
                 </div>
                 <div class="form-group">
                     <label for="modelo_monitor">Modelo</label>
-                    <select class="form-control" id="modelo_monitor" name="modelo_monitor">
-                        <?php foreach ($modelos as $modelo): ?>
-                            <option value="<?php echo $modelo['id_modelo']; ?>" <?php echo ($equipo['modelo_monitor'] == $modelo['id_modelo']) ? 'selected' : ''; ?>>
-                                <?php echo $modelo['modelo']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <input type="text" class="form-control" id="modelo_monitor" name="modelo_monitor" readonly>
                 </div>
             </div>
 
@@ -414,26 +305,17 @@ if (isset($_GET['inventario'])) {
                 <label for="acciones_realizadas">Acciones</label>
                 <textarea class="form-control" id="acciones_realizadas" name="acciones_realizadas" rows="4"></textarea>
             </div>
-
+            <!-- FIRMAS DE RECIBIDO -->
             <div class="signature-section">
                 <div class="form-group">
-                    <label for="nombre_solicitante">Nombre del Solicitante</label>
-                    <input type="text" class="form-control" id="nombre_solicitante" name="nombre_solicitante"
-                        value="<?php echo isset($docente) ? $docente['nombre'] . ' ' . $docente['apellido_p'] . ' ' . $docente['apellido_m'] : 'Docente no encontrado'; ?>" readonly>
-                </div>
+                    <input type="text" class="form-control" id="nombre1" name="nombre1" value="<?php echo $docente['nombre'] ?? ''; ?>" readonly>
+                    <hr>
+                    <label>Nombre y Firma de Recibido</label>
 
-                <div class="form-group">
-                    <label for="firma_recibido">Nombre y Firma de Recibido</label>
-                    <div class="signature-box">
-                        <input type="text" class="form-control" id="firma_recibido" name="firma_recibido">
-                        <hr>
-                        <label>Nombre y Firma de Recibido</label>
-                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="entregado">Entregado</label>
                     <div class="signature-box">
-                        <input type="text" class="form-control" id="entregado" name="entregado">
+                        <input type="text" class="form-control" id="entregado" name="entregado" value="<?php echo $docente['nombre'] ?? ''; ?>" readonly>
                         <hr>
                         <label>Entregado</label>
                     </div>
@@ -471,6 +353,9 @@ if (isset($_GET['inventario'])) {
                         $('#correo').val(docente.correo);
                         $('#extension').val(docente.extension);
                         $('#facultad').val(docente.facultad);
+                        $('#nombre1').val(docente.nombre);
+                        $('#entregado').val(docente.nombre);
+
                     }
                 });
 
@@ -487,31 +372,33 @@ if (isset($_GET['inventario'])) {
                     },
                     success: function(response) {
                         var equipo = JSON.parse(response);
-                        $('#serie').val(equipo.serie);
+                        /* Sect 1 */
                         $('#activo').val(equipo.activo);
-                        $('#tipo_equipo').val(equipo.tipo_equipo);
-                        $('#marca').val(equipo.marca);
-                        $('#modelo').val(equipo.modelo);
-                        $('#ubicacion').val(equipo.ubicacion);
-
-                        $('#disco_duro_1').val(equipo.disco_duro_1);
+                        $('#num_serie').val(equipo.serie);
+                        $('#tipo_equipo').val(equipo.tipo_equipo_nombre);
+                        $('#marca').val(equipo.marca_equipo);
+                        $('#modelo').val(equipo.modelo_equipo);
+                        $('#ubicacion').val(equipo.ubicacion_nombre);
+                        /* Sect Disc 1 */
+                        $('#capacidad_dd1').val(equipo.disco_duro_1);
                         $('#marca_dd1').val(equipo.marca_dd1);
                         $('#serie_dd1').val(equipo.serie_dd1);
                         $('#modelo_dd1').val(equipo.modelo_dd1);
-
-                        $('#disco_duro_2').val(equipo.disco_duro_2);
+                        /* Sect Disc 2 */
+                        $('#capacidad_dd2').val(equipo.disco_duro_2);
                         $('#marca_dd2').val(equipo.marca_dd2);
                         $('#serie_dd2').val(equipo.serie_dd2);
                         $('#modelo_dd2').val(equipo.modelo_dd2);
+                        /* Sect memoria */
 
-                        $('#marca_memoria_1').val(equipo.marca_memoria_1);
-                        $('#serie_memoria_1').val(equipo.serie_memoria_1);
-                        $('#marca_memoria_2').val(equipo.marca_memoria_2);
-                        $('#serie_memoria_2').val(equipo.serie_memoria_2);
-                        $('#marca_memoria_3').val(equipo.marca_memoria_3);
-                        $('#serie_memoria_3').val(equipo.serie_memoria_3);
-                        $('#marca_memoria_4').val(equipo.marca_memoria_4);
-                        $('#serie_memoria_4').val(equipo.serie_memoria_4);
+                        $('#marca_memoria1').val(equipo.marca_memoria_1);
+                        $('#serie_memoria1').val(equipo.serie_memoria_1);
+                        $('#marca_memoria2').val(equipo.marca_memoria_2);
+                        $('#serie_memoria2').val(equipo.serie_memoria_2);
+                        $('#marca_memoria3').val(equipo.marca_memoria_3);
+                        $('#serie_memoria3').val(equipo.serie_memoria_3);
+                        $('#marca_memoria4').val(equipo.marca_memoria_4);
+                        $('#serie_memoria4').val(equipo.serie_memoria_4);
                         $('#tipo_memoria').val(equipo.tipo_memoria);
 
                         $('#marca_monitor').val(equipo.marca_monitor);
@@ -520,6 +407,7 @@ if (isset($_GET['inventario'])) {
                     }
                 });
             });
+
         });
     </script>
 
