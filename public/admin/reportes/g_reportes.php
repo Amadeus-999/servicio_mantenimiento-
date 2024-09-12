@@ -93,7 +93,7 @@ if ($docente) {
     <?php endif; ?>
     <div class="container">
 
-        <form action="guardar_reporte.php" method="POST">
+        <form action="guardar_reporte.php" method="POST" id="reporteForm">
             <div class="header-logo">
                 <img src="../../../assets/images/logo.webp" alt="Logo de la Institución">
                 <div>
@@ -325,6 +325,9 @@ if ($docente) {
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Guardar Reporte</button>
             </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-primary" onclick="generarPDF()">Generar PDF</button>
+            </div>
         </form>
     </div>
 
@@ -409,6 +412,10 @@ if ($docente) {
             });
 
         });
+
+        function generarPDF() {
+            window.location.href = "generar_pdf.php?npesonal=<?php echo $docente['npesonal'] ?? ''; ?>&numero_reporte=<?php echo $ultimo_numero_reporte; ?>";
+        }
     </script>
 
 </body>
