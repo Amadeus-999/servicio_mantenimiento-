@@ -7,23 +7,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $npesonal = $_POST['npesonal'];
     $password = $_POST['password'];
 
-    $sql = "SELECT * FROM t_registro WHERE npesonal = :npesonal";
+    // Consulta para obtener el docente por número personal
+    $sql = "SELECT * FROM t_docente WHERE npesonal = :npesonal";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([':npesonal' => $npesonal]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) {
+        // Verifica la contraseña
         if (password_verify($password, $user['password'])) {
+            // Guarda la información del usuario en la sesión
             $_SESSION['user'] = [
                 'id' => $user['id'], 
                 'npesonal' => $user['npesonal'],
                 'nombre' => $user['nombre'],
+                'tipo_usuario' => $user['tipo_usuario'], // Guardar el tipo de usuario
             ];
 
-            if (strpos($npesonal, 'ADM1') === 0) {
-                header('Location: admin/dashboard.php');
+          
+
+            // Redirige según el tipo de usuario
+            if ((int)$user['tipo_usuario'] === 1) {
+                header('Location: admin/dashboard.php'); // Redirige a admin
             } else {
-                header('Location: index.php');
+                header('Location: index.php'); // Redirige a usuario normal
             }
             exit;
         } else {
@@ -45,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <!--  -->
     <div class="container">
         <div class="card mt-5">
             <div class="card-header text-center">

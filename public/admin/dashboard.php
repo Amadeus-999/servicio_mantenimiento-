@@ -1,10 +1,19 @@
 <?php
 // Asegurarse de que el usuario esté autenticado y sea un administrador
 session_start();
-if (!isset($_SESSION['user']) || strpos($_SESSION['user']['npesonal'], 'ADM1') !== 0) {
+
+// Verificar si el usuario está autenticado
+if (!isset($_SESSION['user'])) {
     header('Location: ../login.php');
     exit;
 }
+
+// Verificar si el usuario es un administrador (tipo_usuario = 1)
+if ((int)$_SESSION['user']['tipo_usuario'] !== 1) {
+    header('Location: ../login.php');
+    exit;
+}
+
 $user_name = $_SESSION['user']['nombre'];
 ?>
 

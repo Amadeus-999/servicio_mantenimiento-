@@ -120,7 +120,7 @@ try {
                 LEFT JOIN t_marca_equipo em3 ON e.marca_memoria_3 = em3.id_marca -- Marca Memoria 3
                 LEFT JOIN t_marca_equipo em4 ON e.marca_memoria_4 = em4.id_marca -- Marca Memoria 4
                 LEFT JOIN t_facultad f ON e.id_facultad = f.id_facultad
-                ORDER BY e.nombre_equipo $order";
+                ORDER BY e.inventario $order";
         $stmt = $pdo->prepare($sql);
     }
 
@@ -189,7 +189,7 @@ try {
                         <th>Marca</th>
                         <th>Modelo</th>
                         <th>Procesador</th>
-                        <th>Memoria Total</th>
+                        <th>Tipo de Memoria</th>
                         <th>Disco Duro 1</th>
                         <th>Marca DD1</th>
                         <th>Modelo DD1</th>
@@ -204,7 +204,7 @@ try {
                         <th>Serie Memoria 3</th>
                         <th>Marca Memoria 4</th>
                         <th>Serie Memoria 4</th>
-                        <th>Tipo de Memoria</th>
+                        <th>Memoria Total</th>
                         <th>Marca Monitor</th>
                         <th>Modelo Monitor</th>
                         <th>Serie Monitor</th>

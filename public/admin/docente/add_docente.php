@@ -13,7 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $apellido_m = $_POST['apellido_m'];
     $extension = $_POST['extension'];
     $correo = $_POST['correo'];
-    $id_facultad = $_POST['id_facultad'];  // Usar id_facultad
+    $id_facultad = $_POST['id_facultad'];
+    
+    // Asegúrate de que el valor de tipo_usuario sea un entero
+    $t_usuario = (int)$_POST['tipo_usuario']; // Convierte a entero
+    $password = $_POST['password']; 
 
     // Verificar si el número personal ya está registrado
     $check_sql = "SELECT * FROM t_docente WHERE npesonal = :npesonal";
@@ -24,9 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($existing_user) {
         $error = "El número personal ya está registrado.";
     } else {
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        
         // Insertar el nuevo docente en la base de datos
-        $sql = "INSERT INTO t_docente (npesonal, nombre, apellido_p, apellido_m, extension, correo, id_facultad)
-                VALUES (:npesonal, :nombre, :apellido_p, :apellido_m, :extension, :correo, :id_facultad)";
+        $sql = "INSERT INTO t_docente (npesonal, nombre, apellido_p, apellido_m, extension, correo, id_facultad, tipo_usuario, password)
+                VALUES (:npesonal, :nombre, :apellido_p, :apellido_m, :extension, :correo, :id_facultad, :tipo_usuario, :password)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             ':npesonal' => $npesonal,
@@ -35,7 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':apellido_m' => $apellido_m,
             ':extension' => $extension,
             ':correo' => $correo,
-            ':id_facultad' => $id_facultad
+            ':id_facultad' => $id_facultad,
+            ':tipo_usuario' => $t_usuario,
+            ':password' => $hashed_password,
         ]);
 
         header('Location: docentes.php');
@@ -91,14 +99,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <div class="form-group">
                         <label for="facultad"><i class="fas fa-university"></i> Facultad</label>
-                        <select class="form-control" id="facultad" name="id_facultad" required> <!-- Cambiar name a id_facultad -->
+                        <select class="form-control" id="facultad" name="id_facultad" required>
                             <option value="">Seleccionar Facultad</option>
                             <?php foreach ($facultades as $facultad): ?>
-                                <option value="<?php echo htmlspecialchars($facultad['id_facultad']); ?>"> <!-- Usar id_facultad -->
+                                <option value="<?php echo htmlspecialchars($facultad['id_facultad']); ?>">
                                     <?php echo htmlspecialchars($facultad['facultad']); ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tipo_usuario"><i class="fas fa-user-cog"></i> Tipo de Usuario</label>
+                        <select class="form-control" id="tipo_usuario" name="tipo_usuario" required>
+                            <option value="0">Docente</option>
+                            <option value="1">Administrador</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-lock"></i> Contraseña</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
                     </div>
                     <button type="submit" class="btn btn-success btn-block"><i class="fas fa-save"></i> Guardar Docente</button>
                     <a href="docentes.php" class="btn btn-secondary btn-block"><i class="fas fa-arrow-left"></i> Volver</a>
@@ -111,4 +130,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-

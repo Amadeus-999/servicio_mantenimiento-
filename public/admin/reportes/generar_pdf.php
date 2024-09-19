@@ -48,7 +48,7 @@ $html = '
 ';
 
 // Crear instancia de MPDF
-$mpdf = new \mpdf\mpdf();
+$mpdf = new \mpdf\Mpdf();
 $mpdf->WriteHTML($html);
 
 // Generar y enviar el PDF al navegador
