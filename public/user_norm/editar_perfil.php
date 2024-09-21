@@ -176,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <button type="submit" class="btn btn-custom btn-custom-primary w-100">Guardar Cambios</button>
-                <a href="dashboard.php" class="btn btn-custom btn-custom-secondary w-100"><i class="fas fa-arrow-left"></i> Volver</a>
+                <a href="../index.php" class="btn btn-custom btn-custom-secondary w-100"><i class="fas fa-arrow-left"></i> Volver</a>
             </form>
         </div>
     </div>
