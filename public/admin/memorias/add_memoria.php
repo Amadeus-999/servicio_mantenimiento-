@@ -2,14 +2,14 @@
 require_once '../../../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $memoria = isset($_POST['memoria']) ? trim($_POST['memoria']) : '';
+    $memoria = isset($_POST['tp_memoria']) ? trim($_POST['tp_memoria']) : '';
 
     if (!empty($memoria)) {
         try {
             // Inserción en la tabla t_memoria
-            $sql = "INSERT INTO t_memoria (memoria) VALUES (:memoria)";
+            $sql = "INSERT INTO tipo_memoria (tp_memoria) VALUES (:tp_memoria)";
             $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':memoria', $memoria, PDO::PARAM_STR);
+            $stmt->bindParam(':tp_memoria', $memoria, PDO::PARAM_STR);
             $stmt->execute();
 
             // Redirección después de la inserción exitosa
@@ -45,8 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <?php endif; ?>
         <form method="POST" action="add_memoria.php">
             <div class="form-group">
-                <label for="memoria"><i class="fas fa-memory"></i> Nombre de la Memoria</label>
-                <input type="text" class="form-control" id="memoria" name="memoria" required>
+                <label for="tp_memoria"><i class="fas fa-memory"></i> Nombre de la Memoria</label>
+                <input type="text" class="form-control" id="tp_memoria" name="tp_memoria" required>
             </div>
             <div class="button-container">
                 <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar</button>

@@ -5,7 +5,7 @@ try {
     $order = isset($_GET['order']) && strtolower($_GET['order']) === 'desc' ? 'DESC' : 'ASC';
 
     // Consulta para obtener las memorias ordenadas
-    $sql = "SELECT memoria FROM t_memoria ORDER BY memoria $order";
+    $sql = "SELECT tp_memoria FROM tipo_memoria ORDER BY tp_memoria $order";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     $memorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -54,7 +54,7 @@ try {
                 <?php if ($memorias): ?>
                     <?php foreach ($memorias as $memoria): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($memoria['memoria']); ?></td>
+                            <td><?php echo htmlspecialchars($memoria['tp_memoria']); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
