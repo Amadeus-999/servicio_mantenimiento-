@@ -2,6 +2,7 @@
 session_start();
 require_once '../../config/database.php';
 
+// Consulta para obtener las facultades disponibles
 $sql = "SELECT id_facultad, facultad FROM t_facultad";
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
@@ -14,6 +15,7 @@ if (!isset($_GET['npesonal'])) {
 
 $npesonal = $_GET['npesonal'];
 
+// Obtener los datos del docente para editar
 $sql = "SELECT * FROM t_docente WHERE npesonal = :npesonal";
 $stmt = $pdo->prepare($sql);
 $stmt->bindParam(':npesonal', $npesonal);
@@ -24,6 +26,7 @@ if (!$user) {
     die("No se encontró el usuario con el número personal especificado.");
 }
 
+// Procesar la actualización del perfil
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = $_POST['nombre'];
     $apellido_p = $_POST['apellido_p'];
@@ -33,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_facultad = $_POST['id_facultad'];
     $password = $_POST['password'];
 
+    // Actualizar los datos del docente
     $sql = "UPDATE t_docente SET nombre = :nombre, apellido_p = :apellido_p, apellido_m = :apellido_m, 
             extension = :extension, correo = :correo, id_facultad = :id_facultad";
 
@@ -73,49 +77,260 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Perfil</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Agregar FontAwesome -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        .profile-form {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 30px;
-            background: #f7f7f7;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
         }
+
+        .navbar {
+            background-color: #007bff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+
+        .sidebar {
+            height: calc(100vh - 56px);
+            width: 250px;
+            background-color: #343a40;
+            padding: 20px;
+            position: fixed;
+            top: 56px;
+            left: 0;
+            overflow-y: auto;
+        }
+
+        .sidebar a {
+            color: #ffffff;
+        }
+
+        .sidebar a:hover {
+            background-color: #007bff;
+            border-radius: 5px;
+        }
+
+        .sidebar h4 {
+            color: #ffffff;
+        }
+
+        .content {
+            margin-left: 250px;
+            margin-top: 56px;
+            padding: 20px;
+            height: calc(100vh - 56px);
+            overflow-y: auto;
+        }
+
+        .profile-form {
+            max-width: 900px;
+            margin: 100px auto;
+            padding: 50px;
+            background: #f7f7f7;
+            border-radius: 40px;
+            box-shadow: 0 0 300px rgba(0, 0, 0, 0.2);
+            margin-left: 250px; /* Ajuste para desplazar a la derecha */
+        }
+
         .form-title {
             font-size: 24px;
             font-weight: bold;
             margin-bottom: 20px;
         }
+
         .form-label {
             display: flex;
             align-items: center;
         }
+
         .form-label i {
             margin-right: 10px;
             color: #007bff;
         }
+
         .btn-custom {
-            padding: 10px 15px; /* Padding adicional para botones */
-            margin-bottom: 10px; /* Espacio entre botones */
+            padding: 10px 15px;
+            margin-bottom: 10px;
         }
+
         .btn-custom-primary {
             background-color: #007bff;
             border-color: #007bff;
         }
+
         .btn-custom-secondary {
             background-color: #6c757d;
             border-color: #6c757d;
         }
+
         .btn-custom-primary:hover, .btn-custom-secondary:hover {
             opacity: 0.9;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+
+    <!-- Barra de navegación superior -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="#">Panel de Administrador</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" 
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                          <a class="dropdown-item" href="../logout.php">Cerrar Sesión</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="d-flex">
+        <div class="sidebar">
+            <h4>Secciones</h4>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#docentes" role="button" aria-expanded="false" aria-controls="docentes">
+                        <i class="fas fa-chalkboard-teacher"></i> Docentes
+                    </a>
+                    <div class="collapse" id="docentes">
+                        <ul class="nav flex-column pl-3">
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/docente/docentes.php">Ver Docentes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/docente/add_docente.php">Agregar Docente</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#equipos" role="button" aria-expanded="false" aria-controls="equipos">
+                        <i class="fas fa-laptop"></i> Tipos de Equipos
+                    </a>
+                    <div class="collapse" id="equipos">
+                        <ul class="nav flex-column pl-3">
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/equipos/equipo.php">Ver Tipos de Equipos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/equipos/add_equipo.php">Agregar Tipo de Equipo</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#facultades" role="button" aria-expanded="false" aria-controls="facultades">
+                        <i class="fas fa-school"></i> Facultades
+                    </a>
+                    <div class="collapse" id="facultades">
+                        <ul class="nav flex-column pl-3">
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/facultades/facultad.php">Ver Facultades</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/facultades/add_facultad.php">Agregar Nueva Facultad</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#marcas" role="button" aria-expanded="false" aria-controls="marcas">
+                        <i class="fas fa-tag"></i> Marcas de Equipos
+                    </a>
+                    <div class="collapse" id="marcas">
+                        <ul class="nav flex-column pl-3">
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/marca_equipos/marca.php">Ver Marcas de Equipos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/marca_equipos/add_marca.php">Agregar Nueva Marca de Equipo</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#memorias" role="button" aria-expanded="false" aria-controls="memorias">
+                        <i class="fas fa-memory"></i> Memorias
+                    </a>
+                    <div class="collapse" id="memorias">
+                        <ul class="nav flex-column pl-3">
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/memorias/memoria.php">Ver Memorias</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/memorias/add_memoria.php">Agregar Nueva Memoria</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#modelos" role="button" aria-expanded="false" aria-controls="modelos">
+                        <i class="fas fa-cogs"></i> Modelos de Equipos
+                    </a>
+                    <div class="collapse" id="modelos">
+                        <ul class="nav flex-column pl-3">
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/modelos/modelo.php">Ver Modelos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/modelos/add_modelo.php">Agregar Nuevo Modelo</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#procesadores" role="button" aria-expanded="false" aria-controls="procesadores">
+                        <i class="fas fa-microchip"></i> Procesadores
+                    </a>
+                    <div class="collapse" id="procesadores">
+                        <ul class="nav flex-column pl-3">
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/procesadores/procesador.php">Ver Procesadores</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/procesadores/add_procesador.php">Agregar Nuevo Procesador</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#ubicaciones" role="button" aria-expanded="false" aria-controls="ubicaciones">
+                        <i class="fas fa-map-marker-alt"></i> Ubicaciones
+                    </a>
+                    <div class="collapse" id="ubicaciones">
+                        <ul class="nav flex-column pl-3">
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/ubicaciones/ubicacion.php">Ver Ubicaciones</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/ubicaciones/add_ubicacion.php">Agregar Nueva Ubicación</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- Contenido principal -->
+        <div class="container">
         <div class="profile-form">
             <div class="form-title">Editar Perfil</div>
             <?php
@@ -180,7 +395,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-
