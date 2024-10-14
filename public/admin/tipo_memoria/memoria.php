@@ -17,10 +17,10 @@ try {
     $search = isset($_GET['search']) ? $_GET['search'] : '';
 
     // Consulta para obtener las memorias, filtrando por nombre
-    $sql = "SELECT id_tmemoria, tp_memoria 
-            FROM tipo_memoria 
-            WHERE tp_memoria LIKE :search 
-            ORDER BY tp_memoria $order";
+    $sql = "SELECT id_memoria, memoria 
+            FROM t_memoria
+            WHERE memoria LIKE :search 
+            ORDER BY memoria $order";
 
     $stmt = $pdo->prepare($sql);
     // Usar wildcards para la búsqueda
@@ -37,7 +37,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Memorias</title>
+    <title>Gestión de Tipos Memorias</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -230,11 +230,11 @@ try {
                             <a class="nav-link" href="../memorias/add_memoria.php">Agregar Nueva Memoria</a>
                         </li>
                         <li class="nav-item">
-                                <a class="nav-link" href="../admin/tipo_memoria/memoria.php">Ver Tipos de Memoria</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="../admin/tipo_memoria/add_memoria.php">Agregar Nueva Tipo Memoria</a>
-                            </li>
+                            <a class="nav-link" href="../admin/tipo_memoria/memoria.php">Ver Tipos de Memoria</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../admin/tipo_memoria/add_memoria.php">Agregar Nueva Tipo Memoria</a>
+                        </li>
                     </ul>
                 </div>
             </li>
@@ -297,19 +297,20 @@ try {
 
     <!-- Contenido principal -->
     <div class="content">
-    <form method="GET" action="">
-                <div class="form-row align-items-center">
-                    <div class="col-auto">
-                        <input type="text" name="search" class="form-control mb-2" placeholder="Buscar memoria" value="<?php echo htmlspecialchars($search); ?>">
-                    </div>
-                    <div class="col-auto">
-                        <button type="submit" class="btn btn-primary mb-2">Buscar</button>
-                    </div>
-            </form>
+        <form method="GET" action="">
+            <div class="form-row align-items-center">
+                <div class="col-auto">
+                    <input type="text" name="search" class="form-control mb-2" placeholder="Buscar memoria" value="<?php echo htmlspecialchars($search); ?>">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary mb-2">Buscar</button>
+                </div>
+            </div>
+        </form>
         <div class="d-flex justify-content-between mb-3">
-            <a href="add_memoria.php" class="btn btn-success mb-2">Agregar Nueva Memoria</a>
+            <a href="add_memoria.php" class="btn btn-success mb-2">Agregar Nuevo Tipo Memoria</a>
             <a href="../dashboard.php" class="btn btn-secondary mb-2">Inicio</a>
-            
+
             <div>
                 <a href="?order=asc" class="btn order-btn <?php echo $order === 'ASC' ? 'active' : ''; ?>">ASC</a>
                 <a href="?order=desc" class="btn order-btn <?php echo $order === 'DESC' ? 'active' : ''; ?>">DESC</a>
@@ -319,7 +320,7 @@ try {
         <table class="table table-striped">
             <thead class="thead-dark">
                 <tr>
-                    <th>Memoria</th>
+                    <th>Tipos Memoria</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -327,10 +328,10 @@ try {
                 <?php if ($memorias): ?>
                     <?php foreach ($memorias as $memoria): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($memoria['tp_memoria']); ?></td>
+                            <td><?php echo htmlspecialchars($memoria['memoria']); ?></td>
                             <td>
-                                <a href="editar_memoria.php?id_tmemoria=<?php echo $memoria['id_tmemoria']; ?>" class="btn btn-primary btn-sm">Editar</a>
-                                <a href="eliminar_memoria.php?id=<?php echo $memoria['id_tmemoria']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta memoria?');">Eliminar</a>
+                                <a href="editar_memoria.php?id_memoria=<?php echo $memoria['id_memoria']; ?>" class="btn btn-primary btn-sm">Editar</a>
+                                <a href="eliminar_memoria.php?id=<?php echo $memoria['id_memoria']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta memoria?');">Eliminar</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

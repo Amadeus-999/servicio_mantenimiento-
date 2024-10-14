@@ -1,43 +1,46 @@
 <?php
 require_once '../../../config/database.php';
+session_start();
 
-session_start(); // Asegúrate de que la sesión esté iniciada
-
-// Verifica que el usuario esté logueado y tenga un id_facultad en la sesión
+// Verificar si el usuario está autenticado
 if (!isset($_SESSION['user'])) {
-    // Redirige al login si no está logueado
-    header('Location: login.php');
+    header('Location: ../../login.php');
     exit;
 }
 
-try {
-    $order = isset($_GET['order']) && strtolower($_GET['order']) === 'desc' ? 'DESC' : 'ASC';
 
-    // Inicializar la variable de búsqueda
-    $search = isset($_GET['search']) ? $_GET['search'] : '';
 
-    // Consulta para obtener las memorias, filtrando por nombre
-    $sql = "SELECT id_tmemoria, tp_memoria 
-            FROM tipo_memoria 
-            WHERE tp_memoria LIKE :search 
-            ORDER BY tp_memoria $order";
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $memoria = isset($_POST['memoria']) ? strtoupper(trim($_POST['memoria'])) : '';
 
-    $stmt = $pdo->prepare($sql);
-    // Usar wildcards para la búsqueda
-    $stmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
-    $stmt->execute();
-    $memorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
+
+    if (!empty($memoria)) {
+        try {
+            // Inserción en la tabla tipo_memoria
+            $sql = "INSERT INTO t_memoria (memoria) VALUES (:memoria)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':memoria', $memoria, PDO::PARAM_STR);
+            $stmt->execute();
+
+            // Redirección después de la inserción exitosa
+            header("Location: memoria.php");
+            exit();
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    } else {
+        $error = "El nombre de la memoria no puede estar vacío.";
+    }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Memorias</title>
+    <title>Agregar Nuevo Tipo Memoria</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -88,30 +91,36 @@ try {
         }
 
         .content {
-            margin-left: 250px;
-            margin-top: 56px;
+            margin-left: 500px;
+            margin-top: 60px;
             padding: 20px;
             overflow-y: auto;
+            position: relative;
+            width: 100%;
+            /* Abarca todo el ancho del contenedor */
         }
 
-        .order-btn {
-            padding: 2px 10px;
-            font-size: 0.8rem;
-            margin-left: 5px;
+        .card {
+            width: 100%;
+            max-width: 700px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .order-btn.active {
-            background-color: #28a745;
-            color: white;
+        .form-group i {
+            margin-right: 5px;
         }
 
-        .table-responsive {
-            overflow-x: auto;
+        .button-container {
+            text-align: center;
         }
     </style>
 </head>
 
 <body>
+
     <!-- Barra de navegación superior -->
     <nav class="navbar navbar-expand-lg navbar-light">
         <a class="navbar-brand" href="#">Panel de Administrador</a>
@@ -230,10 +239,10 @@ try {
                             <a class="nav-link" href="../memorias/add_memoria.php">Agregar Nueva Memoria</a>
                         </li>
                         <li class="nav-item">
-                                <a class="nav-link" href="../admin/tipo_memoria/memoria.php">Ver Tipos de Memoria</a>
+                                <a class="nav-link" href="../tipo_memoria/memoria.php">Ver Tipos de Memoria</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="../admin/tipo_memoria/add_memoria.php">Agregar Nueva Tipo Memoria</a>
+                                <a class="nav-link" href="../tipo_memoria/add_memoria.php">Agregar Nueva Tipo Memoria</a>
                             </li>
                     </ul>
                 </div>
@@ -297,52 +306,34 @@ try {
 
     <!-- Contenido principal -->
     <div class="content">
-    <form method="GET" action="">
-                <div class="form-row align-items-center">
-                    <div class="col-auto">
-                        <input type="text" name="search" class="form-control mb-2" placeholder="Buscar memoria" value="<?php echo htmlspecialchars($search); ?>">
+        <div class="card">
+            <div class="card-header text-center bg-primary text-white">
+                <h4><i class="fas fa-memory"></i> Agregar Nuevo Tipo Memoria</h4>
+            </div>
+            <div class="card-body">
+                <?php if (isset($error)): ?>
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> <?php echo $error; ?>
                     </div>
-                    <div class="col-auto">
-                        <button type="submit" class="btn btn-primary mb-2">Buscar</button>
+                <?php endif; ?>
+                <form method="POST" action="add_memoria.php">
+                    <div class="form-group">
+                        <label for="memoria"><i class="fas fa-memory"></i> Nombre  Nuevo Tipo Memoria
+                            <span style="color: red;">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="memoria" name="memoria" required style="text-transform: uppercase;">
                     </div>
-            </form>
-        <div class="d-flex justify-content-between mb-3">
-            <a href="add_memoria.php" class="btn btn-success mb-2">Agregar Nueva Memoria</a>
-            <a href="../dashboard.php" class="btn btn-secondary mb-2">Inicio</a>
-            
-            <div>
-                <a href="?order=asc" class="btn order-btn <?php echo $order === 'ASC' ? 'active' : ''; ?>">ASC</a>
-                <a href="?order=desc" class="btn order-btn <?php echo $order === 'DESC' ? 'active' : ''; ?>">DESC</a>
+
+                    <div class="button-container">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar</button>
+                        <a href="memoria.php" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</a>
+                    </div>
+                </form>
             </div>
         </div>
-
-        <table class="table table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Memoria</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if ($memorias): ?>
-                    <?php foreach ($memorias as $memoria): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($memoria['tp_memoria']); ?></td>
-                            <td>
-                                <a href="editar_memoria.php?id_tmemoria=<?php echo $memoria['id_tmemoria']; ?>" class="btn btn-primary btn-sm">Editar</a>
-                                <a href="eliminar_memoria.php?id=<?php echo $memoria['id_tmemoria']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta memoria?');">Eliminar</a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="1" class="text-center">No se encontraron memorias</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
     </div>
 
+    <!-- Scripts de JavaScript -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

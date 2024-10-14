@@ -196,6 +196,12 @@ $user_name = $_SESSION['user']['nombre'];
                             <li class="nav-item">
                                 <a class="nav-link" href="../admin/memorias/add_memoria.php">Agregar Nueva Memoria</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/tipo_memoria/memoria.php">Ver Tipos de Memoria</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../admin/tipo_memoria/add_memoria.php">Agregar Nueva Tipo Memoria</a>
+                            </li>
                         </ul>
                     </div>
                 </li>
