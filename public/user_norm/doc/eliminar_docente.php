@@ -19,15 +19,15 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         
 
         // Eliminar el tipo de equipo en t_tipo_equipo
-        $sqlDeletDocente = "DELETE FROM t_alta_equipo WHERE id_alta = :id_alta";
+        $sqlDeletDocente = "DELETE FROM docente WHERE id = :id";
         $stmtDeletDocente = $pdo->prepare($sqlDeletDocente);
-        $stmtDeletDocente->bindParam(':id_alta', $id, PDO::PARAM_INT);
+        $stmtDeletDocente->bindParam(':id', $id, PDO::PARAM_INT);
         $stmtDeletDocente->execute();
 
         $pdo->commit(); // Confirma la transacción
 
-        $_SESSION['mensaje'] = "Equipo y registros relacionados actualizados con éxito.";
-        header('Location: a_equipos.php');
+        $_SESSION['mensaje'] = "Docente y registros relacionados actualizados con éxito.";
+        header('Location: docentes.php');
         exit();
     } catch (PDOException $e) {
         $pdo->rollBack(); // Revierte la transacción en caso de error
@@ -35,7 +35,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     }
 } else {
     // Si no se proporciona un ID válido, redirigimos con un mensaje de error
-    $_SESSION['error'] = "ID de equipo inválido.";
-    header('Location: a_equipos.php');
+    $_SESSION['error'] = "ID de Docente inválido.";
+    header('Location: docentes.php');
     exit();
 }

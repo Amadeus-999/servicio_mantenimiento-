@@ -26,6 +26,7 @@ try {
             $foto_disco_duro = isset($_FILES['foto_disco_duro']) && $_FILES['foto_disco_duro']['error'] === UPLOAD_ERR_OK ? file_get_contents($_FILES['foto_disco_duro']['tmp_name']) : null;
             $foto_memoria = isset($_FILES['foto_memoria']) && $_FILES['foto_memoria']['error'] === UPLOAD_ERR_OK ? file_get_contents($_FILES['foto_memoria']['tmp_name']) : null;
 
+
             // Obtener la facultad del servidor técnico desde la sesión
             $id_facultad = $_SESSION['user']['id_facultad'];  // Facultades almacenadas en la sesión
 
@@ -48,35 +49,36 @@ try {
 
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
-                ':inventario' => strtoupper($_POST['inventario']),
-                ':serie' => strtoupper($_POST['serie']),
-                ':activo' => strtoupper($_POST['activo']),
-                ':nombre_equipo' => strtoupper($_POST['nombre_equipo']),
-                ':ubicacion' => $_POST['ubicacion'] !== '' ? strtoupper($_POST['ubicacion']) : null,
-                ':tipo_equipo' => $_POST['tipo_equipo'] !== '' ? strtoupper($_POST['tipo_equipo']) : null,
-                ':marca' => $_POST['marca'] !== '' ? strtoupper($_POST['marca']) : null,
-                ':modelo' => $_POST['modelo'] !== '' ? strtoupper($_POST['modelo']) : null,
-                ':procesador' => $_POST['procesador'] !== '' ? strtoupper($_POST['procesador']) : null,
-                ':memoria_total' => $_POST['memoria_total'] !== '' ? strtoupper($_POST['memoria_total']) : null,
-                ':disco_duro_1' => strtoupper($_POST['disco_duro_1']),
-                ':marca_dd1' => $_POST['marca_dd1'] !== '' ? strtoupper($_POST['marca_dd1']) : null,
-                ':serie_dd1' => strtoupper($_POST['serie_dd1']),
-                ':modelo_dd1' => $_POST['modelo_dd1'] !== '' ? strtoupper($_POST['modelo_dd1']) : null,
-                ':disco_duro_2' => strtoupper($_POST['disco_duro_2']),
-                ':marca_dd2' => $_POST['marca_dd2'] !== '' ? strtoupper($_POST['marca_dd2']) : null,
-                ':serie_dd2' => strtoupper($_POST['serie_dd2']),
-                ':modelo_dd2' => $_POST['modelo_dd2'] !== '' ? strtoupper($_POST['modelo_dd2']) : null,
-                ':marca_memoria_1' => $_POST['marca_memoria_1'] !== '' ? strtoupper($_POST['marca_memoria_1']) : null,
-                ':serie_memoria_1' => strtoupper($_POST['serie_memoria_1']),
-                ':marca_memoria_2' => $_POST['marca_memoria_2'] !== '' ? strtoupper($_POST['marca_memoria_2']) : null,
-                ':serie_memoria_2' => strtoupper($_POST['serie_memoria_2']),
-                ':marca_memoria_3' => $_POST['marca_memoria_3'] !== '' ? strtoupper($_POST['marca_memoria_3']) : null,
-                ':serie_memoria_3' => strtoupper($_POST['serie_memoria_3']),
-                ':marca_memoria_4' => $_POST['marca_memoria_4'] !== '' ? strtoupper($_POST['marca_memoria_4']) : null,
-                ':serie_memoria_4' => strtoupper($_POST['serie_memoria_4']),
-                ':marca_monitor' => $_POST['marca_monitor'] !== '' ? strtoupper($_POST['marca_monitor']) : null,
-                ':modelo_monitor' => $_POST['modelo_monitor'] !== '' ? strtoupper($_POST['modelo_monitor']) : null,
-                ':serie_monitor' => strtoupper($_POST['serie_monitor']),
+                ':inventario' => !empty($_POST['inventario']) ? strtoupper($_POST['inventario']) : null,
+                ':serie' => isset($_POST['serie']) && $_POST['serie'] !== '' ? $_POST['serie'] : null,
+                ':activo' => isset($_POST['activo']) && $_POST['activo'] !== '' ? strtoupper($_POST['activo']) : null,
+                ':nombre_equipo' => isset($_POST['nombre_equipo']) && $_POST['nombre_equipo'] !== '' ? strtoupper($_POST['nombre_equipo']) : null,
+                ':ubicacion' => isset($_POST['ubicacion']) && $_POST['ubicacion'] !== '' ? $_POST['ubicacion'] : null,
+                ':tipo_equipo' => isset($_POST['tipo_equipo']) && $_POST['tipo_equipo'] !== '' ? strtoupper($_POST['tipo_equipo']) : null,
+                ':marca' => isset($_POST['marca']) && $_POST['marca'] !== '' ? strtoupper($_POST['marca']) : null,
+                ':modelo' => isset($_POST['modelo']) && $_POST['modelo'] !== '' ? strtoupper($_POST['modelo']) : null,
+                ':procesador' => isset($_POST['procesador']) && $_POST['procesador'] !== '' ? strtoupper($_POST['procesador']) : null,
+                ':memoria_total' => isset($_POST['memoria_total']) && $_POST['memoria_total'] !== '' ? $_POST['memoria_total'] : null,
+                ':disco_duro_1' => isset($_POST['disco_duro_1']) && $_POST['disco_duro_1'] !== '' ? strtoupper($_POST['disco_duro_1']) : null,
+                ':marca_dd1' => isset($_POST['marca_dd1']) && $_POST['marca_dd1'] !== '' ? $_POST['marca_dd1'] : null,
+                ':serie_dd1' => isset($_POST['serie_dd1']) && $_POST['serie_dd1'] !== '' ? strtoupper($_POST['serie_dd1']) : null,
+                ':modelo_dd1' => isset($_POST['modelo_dd1']) && $_POST['modelo_dd1'] !== '' ? $_POST['modelo_dd1'] : null,
+                ':disco_duro_2' => isset($_POST['disco_duro_2']) && $_POST['disco_duro_2'] !== '' ? $_POST['disco_duro_2'] : null,
+                ':marca_dd2' => isset($_POST['marca_dd2']) && $_POST['marca_dd2'] !== '' ? $_POST['marca_dd2'] : null,
+                ':serie_dd2' => isset($_POST['serie_dd2']) && $_POST['serie_dd2'] !== '' ? $_POST['serie_dd2'] : null,
+                ':modelo_dd2' => isset($_POST['modelo_dd2']) && $_POST['modelo_dd2'] !== '' ? $_POST['modelo_dd2'] : null,
+                ':marca_memoria_1' => isset($_POST['marca_memoria_1']) && $_POST['marca_memoria_1'] !== '' ? $_POST['marca_memoria_1'] : null,
+                ':serie_memoria_1' => isset($_POST['serie_memoria_1']) && $_POST['serie_memoria_1'] !== '' ? $_POST['serie_memoria_1'] : null,
+                ':marca_memoria_2' => isset($_POST['marca_memoria_2']) && $_POST['marca_memoria_2'] !== '' ? $_POST['marca_memoria_2'] : null,
+                ':serie_memoria_2' => isset($_POST['serie_memoria_2']) && $_POST['serie_memoria_2'] !== '' ? $_POST['serie_memoria_2'] : null,
+                ':marca_memoria_3' => isset($_POST['marca_memoria_3']) && $_POST['marca_memoria_3'] !== '' ? $_POST['marca_memoria_3'] : null,
+                ':serie_memoria_3' => isset($_POST['serie_memoria_3']) && $_POST['serie_memoria_3'] !== '' ? $_POST['serie_memoria_3'] : null,
+                ':marca_memoria_4' => isset($_POST['marca_memoria_4']) && $_POST['marca_memoria_4'] !== '' ? $_POST['marca_memoria_4'] : null,
+                ':serie_memoria_4' => isset($_POST['serie_memoria_4']) && $_POST['serie_memoria_4'] !== '' ? $_POST['serie_memoria_4'] : null,
+                ':marca_monitor' => isset($_POST['marca_monitor']) && $_POST['marca_monitor'] !== '' ? $_POST['marca_monitor'] : null,
+                ':modelo_monitor' => isset($_POST['modelo_monitor']) && $_POST['modelo_monitor'] !== '' ? $_POST['modelo_monitor'] : null,
+                ':serie_monitor' => isset($_POST['serie_monitor']) && $_POST['serie_monitor'] !== '' ? strtoupper($_POST['serie_monitor']) : null,
+
                 ':foto_disco_duro' => $foto_disco_duro,
                 ':foto_memoria' => $foto_memoria,
                 ':id_facultad' => $id_facultad  // Facultades relacionadas del usuario
@@ -104,6 +106,7 @@ try {
     <title>Agregar Nuevo Equipo</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/shadow-fowm.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -180,31 +183,7 @@ try {
 <body>
 
     <!-- Barra de navegación superior -->
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="#">Panel del Servidor Técnico</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
-            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <!-- Menú desplegable de usuario -->
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <span class="nav-link">Bienvenido, <?php echo htmlspecialchars($_SESSION['user']['nombre']); ?></span>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-user"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="../editar_perfil.php?npesonal=<?php echo urlencode($_SESSION['user']['npesonal']); ?>">Editar Perfil</a>
-                        <a class="dropdown-item" href="../../logout.php">Cerrar Sesión</a>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </nav>
+
 
     <!-- Menú lateral -->
     <div class="d-flex">
@@ -266,7 +245,6 @@ try {
         <div class="content">
             <div class="container mt-5">
                 <div class="form-wrapper">
-
                     <h2 class="mb-4"><i class="fas fa-laptop"></i> Registro de Nuevo Equipo</h2>
                     <?php if ($error): ?>
                         <div class="alert alert-danger">
@@ -275,22 +253,29 @@ try {
                     <?php endif; ?>
                     <form action="add_a_equipos.php" method="POST" enctype="multipart/form-data">
                         <div class="form-group">
-                            <label for="inventario">Inventario:
-                            </label>
-                            <input type="number" class="form-control" id="inventario" name="inventario" required style="text-transform: uppercase;">
+                            <label for="checkInventario">El equipo tiene:</label><br>
+                            <input type="checkbox" id="checkInventario" onclick="toggleFields()"> Inventario<br>
+                            <input type="checkbox" id="checkActivo" onclick="toggleFields()"> Activo<br>
                         </div>
-                        <div class="form-group">
-                            <label for="serie">Serie:
 
-                            </label>
+                        <div class="form-group" id="inventarioGroup" style="display: none;">
+                            <label for="inventario">Inventario:</label>
+                            <input type="number" class="form-control" id="inventario" name="inventario" required style="text-transform: uppercase;" disabled>
+                        </div>
+
+                        
+
+                        <div class="form-group" id="activoGroup" style="display: none;">
+                            <label for="activo">Activo:</label>
+                            <input type="number" class="form-control" id="activo" name="activo" disabled>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="serie">Serie:</label>
+                            <span style="color: red;">*</span>
                             <input type="text" class="form-control" id="serie" name="serie" required style="text-transform: uppercase;">
                         </div>
-                        <div class="form-group">
-                            <label for="activo">Activo:
 
-                            </label>
-                            <input type="number" class="form-control" id="activo" name="activo">
-                        </div>
                         <div class="form-group">
                             <label for="nombre_equipo">Nombre del Equipo:
                                 <span style="color: red;">*</span>
@@ -327,7 +312,7 @@ try {
                             <label for="marca">Marca:
                                 <span style="color: red;">*</span>
                             </label>
-                            <select class="form-control" id="marca" name="marca" required>
+                            <select class="form-control" id="marca" name="marca">
                                 <?php foreach ($marcas as $marca): ?>
                                     <option value="" disabled selected hidden>Seleccionar una Marca</option>
 
@@ -349,9 +334,8 @@ try {
                         </div>
                         <div class="form-group">
                             <label for="procesador">Procesador:
-                                <span style="color: red;">*</span>
                             </label>
-                            <select class="form-control" id="procesador" name="procesador" required>
+                            <select class="form-control" id="procesador" name="procesador">
                                 <?php foreach ($procesadores as $procesador): ?>
                                     <option value="" disabled selected hidden>Seleccionar un Procesador</option>
 
@@ -361,9 +345,8 @@ try {
                         </div>
                         <div class="form-group">
                             <label for="memoria_total">Memoria Total:
-                                <span style="color: red;">*</span>
                             </label>
-                            <select class="form-control" id="memoria_total" name="memoria_total" required>
+                            <select class="form-control" id="memoria_total" name="memoria_total">
                                 <?php foreach ($tipos_memoria as $tipo_memoria): ?>
                                     <option value="" disabled selected hidden>Seleccionar Memoria Tota</option>
 
@@ -373,9 +356,8 @@ try {
                         </div>
                         <div class="form-group">
                             <label for="disco_duro_1">Disco Duro 1:
-                                <span style="color: red;">*</span>
                             </label>
-                            <input type="text" class="form-control" id="disco_duro_1" name="disco_duro_1" required style="text-transform: uppercase;">
+                            <input type="text" class="form-control" id="disco_duro_1" name="disco_duro_1" style="text-transform: uppercase;">
                         </div>
                         <div class="form-group">
                             <label for="marca_dd1">Marca DD1:</label>
@@ -390,9 +372,8 @@ try {
                         </div>
                         <div class="form-group">
                             <label for="serie_dd1">Serie DD1:
-                                <span style="color: red;">*</span>
                             </label>
-                            <input type="text" class="form-control" id="serie_dd1" name="serie_dd1" required style="text-transform: uppercase;">
+                            <input type="text" class="form-control" id="serie_dd1" name="serie_dd1" style="text-transform: uppercase;">
                         </div>
                         <div class="form-group">
                             <label for="modelo_dd1">Modelo DD1:</label>
@@ -448,7 +429,7 @@ try {
                         </div>
                         <div class="form-group">
                             <label for="serie_memoria_1">Serie Memoria 1:</label>
-                            <input type="text" class="form-control" id="serie_memoria_1" name="serie_memoria_1" required style="text-transform: uppercase;">
+                            <input type="text" class="form-control" id="serie_memoria_1" name="serie_memoria_1"  style="text-transform: uppercase;">
                         </div>
                         <div class="form-group">
                             <label for="marca_memoria_2">Marca Memoria 2:</label>
@@ -463,7 +444,7 @@ try {
                         </div>
                         <div class="form-group">
                             <label for="serie_memoria_2">Serie Memoria 2:</label>
-                            <input type="text" class="form-control" id="serie_memoria_2" name="serie_memoria_2" required style="text-transform: uppercase;">
+                            <input type="text" class="form-control" id="serie_memoria_2" name="serie_memoria_2"  style="text-transform: uppercase;">
                         </div>
                         <div class="form-group">
                             <label for="marca_memoria_3">Marca Memoria 3:</label>
@@ -478,7 +459,7 @@ try {
                         </div>
                         <div class="form-group">
                             <label for="serie_memoria_3">Serie Memoria 3:</label>
-                            <input type="text" class="form-control" id="serie_memoria_3" name="serie_memoria_3" required style="text-transform: uppercase;">
+                            <input type="text" class="form-control" id="serie_memoria_3" name="serie_memoria_3"  style="text-transform: uppercase;">
                         </div>
                         <div class="form-group">
                             <label for="marca_memoria_4">Marca Memoria 4:</label>
@@ -493,7 +474,7 @@ try {
                         </div>
                         <div class="form-group">
                             <label for="serie_memoria_4">Serie Memoria 4:</label>
-                            <input type="text" class="form-control" id="serie_memoria_4" name="serie_memoria_4" required style="text-transform: uppercase;">
+                            <input type="text" class="form-control" id="serie_memoria_4" name="serie_memoria_4"  style="text-transform: uppercase;">
                         </div>
                         <div class="form-group">
                             <label for="marca_monitor">Marca Monitor:</label>
@@ -519,7 +500,7 @@ try {
                         </div>
                         <div class="form-group">
                             <label for="serie_monitor">Serie Monitor:</label>
-                            <input type="text" class="form-control" id="serie_monitor" name="serie_monitor" required style="text-transform: uppercase;">
+                            <input type="text" class="form-control" id="serie_monitor" name="serie_monitor"  style="text-transform: uppercase;">
                         </div>
                         <button type="submit" class="btn btn-success btn-block"><i class="fas fa-save"></i> Guardar</button>
                         <a href="a_equipos.php" class="btn btn-secondary btn-block"><i class="fas fa-arrow-left"></i> Volver</a>
@@ -528,6 +509,22 @@ try {
             </div>
         </div>
     </div>
+    </div>
+    <script>
+        function toggleFields() {
+            // Obtener los valores de los checkboxes
+            const inventarioChecked = document.getElementById('checkInventario').checked;
+            const activoChecked = document.getElementById('checkActivo').checked;
+
+            // Mostrar u ocultar los campos según los checkboxes
+            document.getElementById('inventarioGroup').style.display = inventarioChecked ? 'block' : 'none';
+            document.getElementById('activoGroup').style.display = activoChecked ? 'block' : 'none';
+
+            // Habilitar o deshabilitar los campos según los checkboxes
+            document.getElementById('inventario').disabled = !inventarioChecked;
+            document.getElementById('activo').disabled = !activoChecked;
+        }
+    </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>

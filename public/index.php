@@ -175,10 +175,10 @@ $user_name = $_SESSION['user']['nombre'];
                     <div class="collapse" id="docentesSubmenu">
                         <ul class="nav flex-column pl-3">
                             <li class="nav-item">
-                                <a class="nav-link" href="../public/admin/docente/docentes.php">Mostrar Docentes</a>
+                                <a class="nav-link" href="../public/user_norm/doc/docentes.php">Mostrar Docentes</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="../public/admin/docente/add_docente.php">Agregar Docente</a>
+                                <a class="nav-link" href="../public/user_norm/doc/add_docente.php">Agregar Docente</a>
                             </li>
                         </ul>
                     </div>

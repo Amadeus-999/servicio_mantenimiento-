@@ -21,13 +21,21 @@ try {
     // Verificar si el orden es ascendente o descendente
     $order = isset($_GET['order']) && strtolower($_GET['order']) === 'desc' ? 'DESC' : 'ASC';
 
-    // Cambia la consulta para obtener los modelos y sus tipos de equipo
+    // Obtener los términos de búsqueda para modelo y tipo de equipo
+    $search_modelo = isset($_GET['search_modelo']) ? $_GET['search_modelo'] : '';
+    $search_tipo = isset($_GET['search_tipo']) ? $_GET['search_tipo'] : '';
+
+    // Cambia la consulta para obtener los modelos y sus tipos de equipo, incluyendo las búsquedas
     $sql = "SELECT m.id_modelo, m.modelo, t.tipo_equipo
             FROM t_modelo_equipo m
             JOIN t_tipo_equipo t ON m.id_tipo_equipo = t.id_tipo_equipo
+            WHERE m.modelo LIKE :search_modelo
+            AND t.tipo_equipo LIKE :search_tipo
             ORDER BY $column $order";
 
     $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':search_modelo', '%' . $search_modelo . '%', PDO::PARAM_STR);
+    $stmt->bindValue(':search_tipo', '%' . $search_tipo . '%', PDO::PARAM_STR);
     $stmt->execute();
     $modelos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -315,6 +323,12 @@ try {
         <!-- Contenido principal -->
         <div class="content">
             <div class="container mt-5">
+                <!-- Formulario de búsqueda -->
+<form method="GET" action="" class="form-inline mb-3">
+    <input type="text" name="search_modelo" class="form-control mr-2" placeholder="Buscar por Modelo" value="<?php echo htmlspecialchars($search_modelo); ?>">
+    <input type="text" name="search_tipo" class="form-control mr-2" placeholder="Buscar por Tipo de Equipo" value="<?php echo htmlspecialchars($search_tipo); ?>">
+    <button type="submit" class="btn btn-primary">Buscar</button>
+</form>
                 <div class="d-flex justify-content-between mb-3">
                     <a href="add_modelo.php" class="btn btn-success">Agregar Nuevo Modelo</a>
                     <div>

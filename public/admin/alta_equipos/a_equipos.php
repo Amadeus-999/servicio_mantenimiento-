@@ -4,7 +4,7 @@ require_once '../../../config/database.php';
 
 // Asegurarse de que el usuario esté autenticado
 if (!isset($_SESSION['user'])) {
-    header('Location: ../login.php');
+    header('Location: ../../login.php');
     exit;
 }
 
@@ -12,7 +12,45 @@ if (!isset($_SESSION['user'])) {
 $user_name = $_SESSION['user']['nombre'];
 $id_facultad = $_SESSION['user']['id_facultad']; // ID de la facultad del servidor técnico
 
-$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+// Inicializar los valores de búsqueda
+$search_values = [
+    'facultad' => '',
+    'inventario' => '',
+    'serie' => '',
+    'activo' => '',
+    'nombre_equipo' => '',
+    'ubicacion' => '',
+    'tipo_equipo' => '',
+    'marca' => '',
+    'modelo' => '',
+    'procesador' => '',
+    'tipo_memoria' => '',
+    'disco_duro_1' => '',
+    'marca_dd1' => '',
+    'modelo_dd1' => '',
+    'disco_duro_2' => '',
+    'marca_dd2' => '',
+    'modelo_dd2' => '',
+    'marca_memoria_1' => '',
+    'serie_memoria_1' => '',
+    'marca_memoria_2' => '',
+    'serie_memoria_2' => '',
+    'marca_memoria_3' => '',
+    'serie_memoria_3' => '',
+    'marca_memoria_4' => '',
+    'serie_memoria_4' => '',
+    'memoria_total' => '',
+    'marca_monitor' => '',
+    'modelo_monitor' => '',
+    'serie_monitor' => ''
+];
+
+// Obtener los valores de búsqueda del formulario
+foreach ($search_values as $key => &$value) {
+    $value = isset($_GET[$key]) ? trim($_GET[$key]) : '';
+}
+
+// Obtener la dirección de ordenamiento
 $order = isset($_GET['order']) && strtolower($_GET['order']) === 'desc' ? 'DESC' : 'ASC';
 
 // Obtener la columna de ordenación
@@ -54,8 +92,9 @@ $allowed_columns = [
 $order_column_sql = array_key_exists($order_column, $allowed_columns) ? $allowed_columns[$order_column] : 'e.inventario';
 
 try {
-    if ($search) {
-        $sql = "SELECT 
+    // Construir la consulta SQL
+    $sql = "SELECT 
+            id_alta,
             e.inventario, 
             e.serie AS serie, 
             e.activo AS activo,
@@ -108,84 +147,39 @@ try {
         LEFT JOIN t_marca_equipo em3 ON e.marca_memoria_3 = em3.id_marca
         LEFT JOIN t_marca_equipo em4 ON e.marca_memoria_4 = em4.id_marca
         LEFT JOIN t_facultad f ON e.id_facultad = f.id_facultad
-        WHERE e.id_facultad = :id_facultad AND e.inventario LIKE :search
-        ORDER BY $order_column_sql $order";
+        WHERE e.id_facultad = :id_facultad";
 
-        $stmt = $pdo->prepare($sql);
-        $searchParam = "%$search%";
-        $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
-        $stmt->bindParam(':id_facultad', $id_facultad, PDO::PARAM_INT);
-    } else {
-        $sql = "SELECT 
-            e.inventario, 
-            e.serie AS serie, 
-            e.activo AS activo,
-            e.nombre_equipo AS nombre_equipo,
-            u.ubicacion AS ubicacion_nombre,
-            t.tipo_equipo AS tipo_equipo_nombre,
-            m.marca AS marca_equipo,
-            mo_eq.modelo AS modelo_equipo,
-            p.procesador AS procesador_nombre,
-            mem.memoria AS memoria_total_nombre,
-            tm.tp_memoria AS tipo_memoria_nombre,
-            mm.marca AS marca_monitor,
-            mo_mon.modelo AS modelo_monitor,
-            e.disco_duro_1, 
-            m_dd1.marca AS marca_dd1, 
-            e.serie_dd1, 
-            mo_dd1.modelo AS modelo_dd1,
-            e.disco_duro_2,
-            m_dd2.marca AS marca_dd2,
-            e.serie_dd2,
-            mo_dd2.modelo AS modelo_dd2,
-            em1.marca AS marca_memoria_1,
-            e.serie_memoria_1,
-            em2.marca AS marca_memoria_2,
-            e.serie_memoria_2,
-            em3.marca AS marca_memoria_3,
-            e.serie_memoria_3,
-            em4.marca AS marca_memoria_4,
-            e.serie_memoria_4,
-            e.serie_monitor,
-            e.foto_disco_duro,
-            e.foto_memoria,
-            f.facultad AS nombre_facultad
-        FROM t_alta_equipo e
-        LEFT JOIN t_ubicacion u ON e.ubicacion = u.id_ubicacion
-        LEFT JOIN t_tipo_equipo t ON e.tipo_equipo = t.id_tipo_equipo
-        LEFT JOIN t_marca_equipo m ON e.marca = m.id_marca
-        LEFT JOIN t_modelo_equipo mo_eq ON e.modelo = mo_eq.id_modelo
-        LEFT JOIN t_procesador p ON e.procesador = p.id_procesador
-        LEFT JOIN t_memoria mem ON e.memoria_total = mem.id_memoria
-        LEFT JOIN tipo_memoria tm ON e.tip_memoria = tm.id_tmemoria
-        LEFT JOIN t_marca_equipo mm ON e.marca_monitor = mm.id_marca
-        LEFT JOIN t_modelo_equipo mo_mon ON e.modelo_monitor = mo_mon.id_modelo
-        LEFT JOIN t_marca_equipo m_dd1 ON e.marca_dd1 = m_dd1.id_marca
-        LEFT JOIN t_modelo_equipo mo_dd1 ON e.modelo_dd1 = mo_dd1.id_modelo
-        LEFT JOIN t_marca_equipo m_dd2 ON e.marca_dd2 = m_dd2.id_marca
-        LEFT JOIN t_modelo_equipo mo_dd2 ON e.modelo_dd2 = mo_dd2.id_modelo
-        LEFT JOIN t_marca_equipo em1 ON e.marca_memoria_1 = em1.id_marca
-        LEFT JOIN t_marca_equipo em2 ON e.marca_memoria_2 = em2.id_marca
-        LEFT JOIN t_marca_equipo em3 ON e.marca_memoria_3 = em3.id_marca
-        LEFT JOIN t_marca_equipo em4 ON e.marca_memoria_4 = em4.id_marca
-        LEFT JOIN t_facultad f ON e.id_facultad = f.id_facultad
-        WHERE e.id_facultad = :id_facultad
-        ORDER BY $order_column_sql $order";
+    // Añadir filtros a la consulta
+    $conditions = [];
+    foreach ($search_values as $key => $value) {
+        if ($value !== '') {
+            $conditions[] = "$allowed_columns[$key] LIKE :$key";
+        }
+    }
 
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':id_facultad', $id_facultad, PDO::PARAM_INT);
+    if (!empty($conditions)) {
+        $sql .= ' AND ' . implode(' AND ', $conditions);
+    }
+
+    $sql .= " ORDER BY $order_column_sql $order";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':id_facultad', $id_facultad, PDO::PARAM_INT);
+
+    // Vincular los parámetros de búsqueda
+    foreach ($search_values as $key => $value) {
+        if ($value !== '') {
+            $stmt->bindValue(":$key", '%' . $value . '%', PDO::PARAM_STR);
+        }
     }
 
     $stmt->execute();
     $equipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
     exit;
 }
 ?>
-
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -382,84 +376,219 @@ try {
                 <a href="../dashboard.php" class="btn btn-secondary">Inicio</a>
             </div>
 
-            <form action="" method="get" class="form-inline mb-4">
-            <div class="form-group mx-sm-2">
-                <input type="text" name="search" placeholder="Buscar" class="form-control" value="<?php echo htmlspecialchars($search); ?>">
-            </div>
-            <div class="form-group mx-sm-2">
-                <select name="order_column" class="form-control">
-                    <option value="inventario" <?php echo ($order_column === 'inventario') ? 'selected' : ''; ?>>Inventario</option>
-                    <option value="serie" <?php echo ($order_column === 'serie') ? 'selected' : ''; ?>>Serie</option>
-                    <option value="activo" <?php echo ($order_column === 'activo') ? 'selected' : ''; ?>>Activo</option>
-                    <option value="nombre_equipo" <?php echo ($order_column === 'nombre_equipo') ? 'selected' : ''; ?>>Nombre del Equipo</option>
-                    <option value="ubicacion" <?php echo ($order_column === 'ubicacion') ? 'selected' : ''; ?>>Ubicación</option>
-                    <option value="tipo_equipo" <?php echo ($order_column === 'tipo_equipo') ? 'selected' : ''; ?>>Tipo de Equipo</option>
-                    <option value="marca" <?php echo ($order_column === 'marca') ? 'selected' : ''; ?>>Marca</option>
-                    <option value="modelo" <?php echo ($order_column === 'modelo') ? 'selected' : ''; ?>>Modelo</option>
-                    <option value="procesador" <?php echo ($order_column === 'procesador') ? 'selected' : ''; ?>>Procesador</option>
-                    <option value="tipo_memoria" <?php echo ($order_column === 'tipo_memoria') ? 'selected' : ''; ?>>Tipo de Memoria</option>
-                    <option value="marca_monitor" <?php echo ($order_column === 'marca_monitor') ? 'selected' : ''; ?>>Marca Monitor</option>
-                    <option value="modelo_monitor" <?php echo ($order_column === 'modelo_monitor') ? 'selected' : ''; ?>>Modelo Monitor</option>
-                    <option value="disco_duro_1" <?php echo ($order_column === 'disco_duro_1') ? 'selected' : ''; ?>>Disco Duro 1</option>
-                    <option value="marca_dd1" <?php echo ($order_column === 'marca_dd1') ? 'selected' : ''; ?>>Marca DD1</option>
-                    <option value="modelo_dd1" <?php echo ($order_column === 'modelo_dd1') ? 'selected' : ''; ?>>Modelo DD1</option>
-                    <option value="disco_duro_2" <?php echo ($order_column === 'disco_duro_2') ? 'selected' : ''; ?>>Disco Duro 2</option>
-                    <option value="marca_dd2" <?php echo ($order_column === 'marca_dd2') ? 'selected' : ''; ?>>Marca DD2</option>
-                    <option value="modelo_dd2" <?php echo ($order_column === 'modelo_dd2') ? 'selected' : ''; ?>>Modelo DD2</option>
-                    <option value="marca_memoria_1" <?php echo ($order_column === 'marca_memoria_1') ? 'selected' : ''; ?>>Marca Memoria 1</option>
-                    <option value="serie_memoria_1" <?php echo ($order_column === 'serie_memoria_1') ? 'selected' : ''; ?>>Serie Memoria 1</option>
-                    <option value="marca_memoria_2" <?php echo ($order_column === 'marca_memoria_2') ? 'selected' : ''; ?>>Marca Memoria 2</option>
-                    <option value="serie_memoria_2" <?php echo ($order_column === 'serie_memoria_2') ? 'selected' : ''; ?>>Serie Memoria 2</option>
-                    <option value="marca_memoria_3" <?php echo ($order_column === 'marca_memoria_3') ? 'selected' : ''; ?>>Marca Memoria 3</option>
-                    <option value="serie_memoria_3" <?php echo ($order_column === 'serie_memoria_3') ? 'selected' : ''; ?>>Serie Memoria 3</option>
-                    <option value="marca_memoria_4" <?php echo ($order_column === 'marca_memoria_4') ? 'selected' : ''; ?>>Marca Memoria 4</option>
-                    <option value="serie_memoria_4" <?php echo ($order_column === 'serie_memoria_4') ? 'selected' : ''; ?>>Serie Memoria 4</option>
-                    <option value="serie_monitor" <?php echo ($order_column === 'serie_monitor') ? 'selected' : ''; ?>>Serie Monitor</option>
-                </select>
-            </div>
-            <div class="form-group mx-sm-2">
-                <select name="order" class="form-control">
-                    <option value="asc" <?php echo ($order === 'ASC') ? 'selected' : ''; ?>>Ascendente</option>
-                    <option value="desc" <?php echo ($order === 'DESC') ? 'selected' : ''; ?>>Descendente</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-success">Buscar</button>
-        </form>
+            <form method="GET">
+                <input type="text" name="facultad" placeholder="Facultad" value="<?php echo htmlspecialchars($search_values['facultad']); ?>">
+                <input type="text" name="inventario" placeholder="Inventario" value="<?php echo htmlspecialchars($search_values['inventario']); ?>">
+                <input type="text" name="serie" placeholder="Serie" value="<?php echo htmlspecialchars($search_values['serie']); ?>">
+                <input type="text" name="activo" placeholder="Activo" value="<?php echo htmlspecialchars($search_values['activo']); ?>">
+                <input type="text" name="nombre_equipo" placeholder="Nombre del Equipo" value="<?php echo htmlspecialchars($search_values['nombre_equipo']); ?>">
+                <input type="text" name="ubicacion" placeholder="Ubicación" value="<?php echo htmlspecialchars($search_values['ubicacion']); ?>">
+                <input type="text" name="tipo_equipo" placeholder="Tipo de Equipo" value="<?php echo htmlspecialchars($search_values['tipo_equipo']); ?>">
+                <input type="text" name="marca" placeholder="Marca" value="<?php echo htmlspecialchars($search_values['marca']); ?>">
+                <input type="text" name="modelo" placeholder="Modelo" value="<?php echo htmlspecialchars($search_values['modelo']); ?>">
+                <input type="text" name="procesador" placeholder="Procesador" value="<?php echo htmlspecialchars($search_values['procesador']); ?>">
+                <input type="text" name="tipo_memoria" placeholder="Tipo de Memoria" value="<?php echo htmlspecialchars($search_values['tipo_memoria']); ?>">
+                <input type="text" name="disco_duro_1" placeholder="Disco Duro 1" value="<?php echo htmlspecialchars($search_values['disco_duro_1']); ?>">
+                <input type="text" name="marca_dd1" placeholder="Marca DD1" value="<?php echo htmlspecialchars($search_values['marca_dd1']); ?>">
+                <input type="text" name="modelo_dd1" placeholder="Modelo DD1" value="<?php echo htmlspecialchars($search_values['modelo_dd1']); ?>">
+                <input type="text" name="disco_duro_2" placeholder="Disco Duro 2" value="<?php echo htmlspecialchars($search_values['disco_duro_2']); ?>">
+                <input type="text" name="marca_dd2" placeholder="Marca DD2" value="<?php echo htmlspecialchars($search_values['marca_dd2']); ?>">
+                <input type="text" name="modelo_dd2" placeholder="Modelo DD2" value="<?php echo htmlspecialchars($search_values['modelo_dd2']); ?>">
+                <input type="text" name="marca_memoria_1" placeholder="Marca Memoria 1" value="<?php echo htmlspecialchars($search_values['marca_memoria_1']); ?>">
+                <input type="text" name="serie_memoria_1" placeholder="Serie Memoria 1" value="<?php echo htmlspecialchars($search_values['serie_memoria_1']); ?>">
+                <input type="text" name="marca_memoria_2" placeholder="Marca Memoria 2" value="<?php echo htmlspecialchars($search_values['marca_memoria_2']); ?>">
+                <input type="text" name="serie_memoria_2" placeholder="Serie Memoria 2" value="<?php echo htmlspecialchars($search_values['serie_memoria_2']); ?>">
+                <input type="text" name="marca_memoria_3" placeholder="Marca Memoria 3" value="<?php echo htmlspecialchars($search_values['marca_memoria_3']); ?>">
+                <input type="text" name="serie_memoria_3" placeholder="Serie Memoria 3" value="<?php echo htmlspecialchars($search_values['serie_memoria_3']); ?>">
+                <input type="text" name="marca_memoria_4" placeholder="Marca Memoria 4" value="<?php echo htmlspecialchars($search_values['marca_memoria_4']); ?>">
+                <input type="text" name="serie_memoria_4" placeholder="Serie Memoria 4" value="<?php echo htmlspecialchars($search_values['serie_memoria_4']); ?>">
+                <input type="text" name="memoria_total" placeholder="Memoria Total" value="<?php echo htmlspecialchars($search_values['memoria_total']); ?>">
+                <input type="text" name="marca_monitor" placeholder="Marca Monitor" value="<?php echo htmlspecialchars($search_values['marca_monitor']); ?>">
+                <input type="text" name="modelo_monitor" placeholder="Modelo Monitor" value="<?php echo htmlspecialchars($search_values['modelo_monitor']); ?>">
+                <input type="text" name="serie_monitor" placeholder="Serie Monitor" value="<?php echo htmlspecialchars($search_values['serie_monitor']); ?>">
+                <button type="submit">Buscar</button>
+            </form>
 
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Facultad</th>
-                            <th>Inventario</th>
-                            <th>Serie</th>
-                            <th>Activo</th>
-                            <th>Nombre del Equipo</th>
-                            <th>Ubicación</th>
-                            <th>Tipo de Equipo</th>
-                            <th>Marca</th>
-                            <th>Modelo</th>
-                            <th>Procesador</th>
-                            <th>Tipo de Memoria</th>
-                            <th>Disco Duro 1</th>
-                            <th>Marca DD1</th>
-                            <th>Modelo DD1</th>
-                            <th>Disco Duro 2</th>
-                            <th>Marca DD2</th>
-                            <th>Modelo DD2</th>
-                            <th>Marca Memoria 1</th>
-                            <th>Serie Memoria 1</th>
-                            <th>Marca Memoria 2</th>
-                            <th>Serie Memoria 2</th>
-                            <th>Marca Memoria 3</th>
-                            <th>Serie Memoria 3</th>
-                            <th>Marca Memoria 4</th>
-                            <th>Serie Memoria 4</th>
-                            <th>Tipo de memoria</th>
-                            <th>Marca Monitor</th>
-                            <th>Modelo Monitor</th>
-                            <th>Serie Monitor</th>
-                            <th>Acciones</th> <!-- Movido al final -->
+                            <th>
+                                Facultad
+                                <br>
+                                <a href="?order_column=facultad&order=asc">↑</a>
+                                <a href="?order_column=facultad&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Inventario
+                                <br>
+                                <a href="?order_column=inventario&order=asc">↑</a>
+                                <a href="?order_column=inventario&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Activo
+                                <br>
+                                <a href="?order_column=activo&order=asc">↑</a>
+                                <a href="?order_column=activo&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Serie
+                                <br>
+                                <a href="?order_column=serie&order=asc">↑</a>
+                                <a href="?order_column=serie&order=desc">↓</a>
+                            </th>
+
+                            <th>
+                                Nombre del Equipo
+                                <br>
+                                <a href="?order_column=nombre_equipo&order=asc">↑</a>
+                                <a href="?order_column=nombre_equipo&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Ubicación
+                                <br>
+                                <a href="?order_column=ubicacion&order=asc">↑</a>
+                                <a href="?order_column=ubicacion&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Tipo de Equipo
+                                <br>
+                                <a href="?order_column=tipo_equipo&order=asc">↑</a>
+                                <a href="?order_column=tipo_equipo&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Marca
+                                <br>
+                                <a href="?order_column=marca&order=asc">↑</a>
+                                <a href="?order_column=marca&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Modelo
+                                <br>
+                                <a href="?order_column=modelo&order=asc">↑</a>
+                                <a href="?order_column=modelo&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Procesador
+                                <br>
+                                <a href="?order_column=procesador&order=asc">↑</a>
+                                <a href="?order_column=procesador&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Tipo de Memoria
+                                <br>
+                                <a href="?order_column=tipo_memoria&order=asc">↑</a>
+                                <a href="?order_column=tipo_memoria&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Disco Duro 1
+                                <br>
+                                <a href="?order_column=disco_duro_1&order=asc">↑</a>
+                                <a href="?order_column=disco_duro_1&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Marca DD1
+                                <br>
+                                <a href="?order_column=marca_dd1&order=asc">↑</a>
+                                <a href="?order_column=marca_dd1&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Modelo DD1
+                                <br>
+                                <a href="?order_column=modelo_dd1&order=asc">↑</a>
+                                <a href="?order_column=modelo_dd1&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Disco Duro 2
+                                <br>
+                                <a href="?order_column=disco_duro_2&order=asc">↑</a>
+                                <a href="?order_column=disco_duro_2&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Marca DD2
+                                <br>
+                                <a href="?order_column=marca_dd2&order=asc">↑</a>
+                                <a href="?order_column=marca_dd2&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Modelo DD2
+                                <br>
+                                <a href="?order_column=modelo_dd2&order=asc">↑</a>
+                                <a href="?order_column=modelo_dd2&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Marca Memoria 1
+                                <br>
+                                <a href="?order_column=marca_memoria_1&order=asc">↑</a>
+                                <a href="?order_column=marca_memoria_1&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Serie Memoria 1
+                                <br>
+                                <a href="?order_column=serie_memoria_1&order=asc">↑</a>
+                                <a href="?order_column=serie_memoria_1&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Marca Memoria 2
+                                <br>
+                                <a href="?order_column=marca_memoria_2&order=asc">↑</a>
+                                <a href="?order_column=marca_memoria_2&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Serie Memoria 2
+                                <br>
+                                <a href="?order_column=serie_memoria_2&order=asc">↑</a>
+                                <a href="?order_column=serie_memoria_2&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Marca Memoria 3
+                                <br>
+                                <a href="?order_column=marca_memoria_3&order=asc">↑</a>
+                                <a href="?order_column=marca_memoria_3&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Serie Memoria 3
+                                <br>
+                                <a href="?order_column=serie_memoria_3&order=asc">↑</a>
+                                <a href="?order_column=serie_memoria_3&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Marca Memoria 4
+                                <br>
+                                <a href="?order_column=marca_memoria_4&order=asc">↑</a>
+                                <a href="?order_column=marca_memoria_4&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Serie Memoria 4
+                                <br>
+                                <a href="?order_column=serie_memoria_4&order=asc">↑</a>
+                                <a href="?order_column=serie_memoria_4&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Memoria Total
+                                <br>
+                                <a href="?order_column=memoria_total_nombre&order=asc">↑</a>
+                                <a href="?order_column=memoria_total_nombre&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Marca Monitor
+                                <br>
+                                <a href="?order_column=marca_monitor&order=asc">↑</a>
+                                <a href="?order_column=marca_monitor&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Modelo Monitor
+                                <br>
+                                <a href="?order_column=modelo_monitor&order=asc">↑</a>
+                                <a href="?order_column=modelo_monitor&order=desc">↓</a>
+                            </th>
+                            <th>
+                                Serie Monitor
+                                <br>
+                                <a href="?order_column=serie_monitor&order=asc">↑</a>
+                                <a href="?order_column=serie_monitor&order=desc">↓</a>
+                            </th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -468,8 +597,8 @@ try {
                                 <tr>
                                     <td><?php echo htmlspecialchars($equipo['nombre_facultad']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['inventario']); ?></td>
-                                    <td><?php echo htmlspecialchars($equipo['serie']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['activo']); ?></td>
+                                    <td><?php echo htmlspecialchars($equipo['serie']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['nombre_equipo']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['ubicacion_nombre']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['tipo_equipo_nombre']); ?></td>
@@ -496,8 +625,8 @@ try {
                                     <td><?php echo htmlspecialchars($equipo['modelo_monitor']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['serie_monitor']); ?></td>
                                     <td class="action-buttons">
-                                        <a href="editar_equipo.php?inventario=<?php echo $equipo['inventario']; ?>" class="btn btn-primary btn-sm">Editar</a>
-                                        <a href="eliminar_equipo.php?id=<?php echo $equipo['inventario']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar a docente?');">Borrar</a>
+                                        <a href="editar_equipo.php?id_alta=<?php echo $equipo['id_alta']; ?>" class="btn btn-primary btn-sm">Editar</a>
+                                        <a href="eliminar_equipo.php?id=<?php echo $equipo['id_alta']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar a docente?');">Borrar</a>
                                     </td> <!-- Botones con estilo en línea -->
                                 </tr>
                             <?php endforeach; ?>

@@ -32,7 +32,7 @@ try {
 
     // Preparar consulta SQL con condiciones de búsqueda
     $sql = "SELECT id, d.npesonal, d.nombre, d.apellido_p, d.apellido_m, d.extension, d.correo, f.facultad
-            FROM t_docente d
+            FROM docente d
             JOIN t_facultad f ON d.id_facultad = f.id_facultad
             WHERE 1=1";
 

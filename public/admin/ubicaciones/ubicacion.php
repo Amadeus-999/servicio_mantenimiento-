@@ -12,12 +12,21 @@ if (!isset($_SESSION['user']['id_facultad'])) {
 try {
     $order = isset($_GET['order']) && strtolower($_GET['order']) === 'desc' ? 'DESC' : 'ASC';
 
-    // Cambia la consulta para obtener las ubicaciones y facultades, incluyendo la id
+    // Obtener los términos de búsqueda de las columnas Facultad y Ubicación
+    $search_facultad = isset($_GET['search_facultad']) ? $_GET['search_facultad'] : '';
+    $search_ubicacion = isset($_GET['search_ubicacion']) ? $_GET['search_ubicacion'] : '';
+
+    // Modificar la consulta para incluir las búsquedas por facultad y ubicación
     $sql = "SELECT u.id_ubicacion, u.ubicacion, f.facultad 
             FROM t_ubicacion u
             LEFT JOIN t_facultad f ON u.id_facultad = f.id_facultad
+            WHERE f.facultad LIKE :search_facultad
+            AND u.ubicacion LIKE :search_ubicacion
             ORDER BY u.ubicacion $order";
+
     $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':search_facultad', '%' . $search_facultad . '%', PDO::PARAM_STR);
+    $stmt->bindValue(':search_ubicacion', '%' . $search_ubicacion . '%', PDO::PARAM_STR);
     $stmt->execute();
     $ubicaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -260,6 +269,7 @@ try {
 
     <!-- Contenido principal -->
     <div class="content">
+        <!-- Formulario de búsqueda -->
         <div class="d-flex justify-content-between mb-3">
             <a href="add_ubicacion.php" class="btn btn-success">Agregar Nueva Ubicación</a>
             <a href="../dashboard.php" class="btn btn-secondary">Inicio</a>
@@ -268,6 +278,12 @@ try {
                 <a href="?order=desc" class="btn order-btn <?php echo $order === 'DESC' ? 'active' : ''; ?>">DESC</a>
             </div>
         </div>
+
+        <form method="GET" action="" class="form-inline mb-3">
+            <input type="text" name="search_facultad" class="form-control mr-2" placeholder="Buscar por Facultad" value="<?php echo htmlspecialchars($search_facultad); ?>">
+            <input type="text" name="search_ubicacion" class="form-control mr-2" placeholder="Buscar por Ubicación" value="<?php echo htmlspecialchars($search_ubicacion); ?>">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
 
         <table class="table table-striped">
             <thead class="thead-dark">

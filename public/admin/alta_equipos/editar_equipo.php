@@ -3,7 +3,7 @@ session_start();
 require_once '../../../config/database.php';
 try {
 
-    $id = isset($_GET['inventario']) ? intval($_GET['inventario']) : 0;
+    $id = isset($_GET['id_alta']) ? intval($_GET['id_alta']) : 0;
     $equipo = $pdo->query("SELECT * FROM t_alta_equipo WHERE inventario = $id")->fetch();
     $ubicaciones = $pdo->query("SELECT id_ubicacion, ubicacion FROM t_ubicacion")->fetchAll();
     $tipos_equipo = $pdo->query("SELECT id_tipo_equipo, tipo_equipo FROM t_tipo_equipo")->fetchAll();
@@ -15,9 +15,9 @@ try {
     $facultades = $pdo->query("SELECT id_facultad, facultad FROM t_facultad")->fetchAll();
 
     // Obtener los datos actuales del equipo a editar
-    if (isset($_GET['inventario'])) {
-        $stmt = $pdo->prepare("SELECT * FROM t_alta_equipo WHERE inventario = :inventario");
-        $stmt->execute([':inventario' => $_GET['inventario']]);
+    if (isset($_GET['id_alta'])) {
+        $stmt = $pdo->prepare("SELECT * FROM t_alta_equipo WHERE id_alta = :id_alta");
+        $stmt->execute([':id_alta' => $_GET['id_alta']]);
         $equipo = $stmt->fetch();
 
         if (!$equipo) {
@@ -83,7 +83,9 @@ try {
         <div class="form-wrapper">
 
             <h2 class="mb-4"><i class="fas fa-edit"></i> Editar Equipo</h2>
-            <form action="update_equipo.php?inventario=<?php echo $id; ?>" method="POST" enctype="multipart/form-data">
+            <form action="update_equipo.php?id_alta=<?php echo $id; ?>" method="POST" enctype="multipart/form-data">
+            <!-- <input type="hidden" name="id_alta" value="<?php echo htmlspecialchars($equipo['id_alta']); ?>"> -->
+
             <input type="hidden" name="inventario_original" value="<?php echo htmlspecialchars($equipo['inventario']); ?>">
 
                 <div class="form-group">

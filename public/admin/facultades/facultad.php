@@ -11,19 +11,32 @@ require_once '../../../config/database.php';
 
 try {
     $order = isset($_GET['order']) && strtolower($_GET['order']) === 'desc' ? 'DESC' : 'ASC';
-    $search = isset($_GET['search']) ? $_GET['search'] : '';
 
-    // Consulta para obtener las facultades, filtrando según el parámetro de búsqueda
+    // Inicializar variable de búsqueda
+    $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+    // Consulta para obtener las facultades, ordenadas según el parámetro 'order'
     $sql = "SELECT id_facultad, facultad 
             FROM t_facultad 
-            WHERE id_facultad != :id_excluir 
-            AND facultad LIKE :search 
-            ORDER BY facultad $order";
+            WHERE id_facultad != :id_excluir";
 
-    $id_excluir = 6; // Facultades a excluir de la lista
+    // Agregar condición de búsqueda
+    if ($search) {
+        $sql .= " AND facultad LIKE :search";
+    }
+
+    $sql .= " ORDER BY facultad $order";
+
+    $id_excluir = 6;
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':id_excluir', $id_excluir, PDO::PARAM_INT);
-    $stmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
+
+    // Vincular el parámetro de búsqueda si se ha proporcionado
+    if ($search) {
+        $searchParam = "%$search%";
+        $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
+    }
+
     $stmt->execute();
     $facultades = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -322,24 +335,19 @@ $user_name = isset($_SESSION['user']['nombre']) ? htmlspecialchars($_SESSION['us
         <!-- Contenido principal -->
         <div class="content">
             <div class="table-container">
-                <form method="GET" action="">
-                    <div class="form-row align-items-center">
-                        <div class="col-auto">
-                            <input type="text" name="search" class="form-control mb-2" placeholder="Buscar facultad" value="<?php echo htmlspecialchars($search); ?>">
-                        </div>
-                        <div class="col-auto">
-                            <button type="submit" class="btn btn-primary mb-2">Buscar</button>
-                        </div>
-                    </div>
+                <form action="" method="get" class="form-inline mb-4">
+                    <input type="text" name="search" class="form-control mr-2" placeholder="Buscar facultad" value="<?php echo htmlspecialchars($search); ?>">
+                    <select name="order" class="form-control mr-2">
+                        <option value="ASC" <?php echo ($order === 'ASC') ? 'selected' : ''; ?>>Ascendente</option>
+                        <option value="DESC" <?php echo ($order === 'DESC') ? 'selected' : ''; ?>>Descendente</option>
+                    </select>
+                    <button type="submit" class="btn btn-success">Buscar</button>
                 </form>
-
                 <div class="d-flex justify-content-between mb-3">
+
                     <a href="add_facultad.php" class="btn btn-success">Agregar Nueva Facultad</a>
                     <a href="../dashboard.php" class="btn btn-secondary">Inicio</a>
-                    <div>
-                        <a href="?order=asc&search=<?php echo htmlspecialchars($search); ?>" class="btn order-btn <?php echo $order === 'ASC' ? 'active' : ''; ?>">ASC</a>
-                        <a href="?order=desc&search=<?php echo htmlspecialchars($search); ?>" class="btn order-btn <?php echo $order === 'DESC' ? 'active' : ''; ?>">DESC</a>
-                    </div>
+
                 </div>
 
                 <table class="table table-striped">

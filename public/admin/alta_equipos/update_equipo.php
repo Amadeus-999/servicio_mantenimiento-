@@ -1,12 +1,13 @@
 <?php
 require_once '../../../config/database.php';
 
-// Verificar si se ha enviado el inventario del equipo
-if (!isset($_GET['inventario'])) {
-    die("Error: Inventario no proporcionado.");
+// Verificar si se ha enviado el id_alta
+if (!isset($_GET['id_alta'])) {
+    die("Error: ID de alta no proporcionado.");
 }
 
-$inventario_original = $_GET['inventario']; // Inventario original
+$id_alta = $_GET['id_alta']; // Obtener el ID de alta desde la URL
+
 try {
     // Consultas para obtener datos de la base de datos
     $ubicaciones = $pdo->query("SELECT id_ubicacion, ubicacion FROM t_ubicacion")->fetchAll();
@@ -23,13 +24,14 @@ try {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         try {
             // Obtener datos del formulario
-            $inventario_nuevo = isset($_POST['inventario']) ? trim($_POST['inventario']) : $inventario_original;
-            
+            $inventario_nuevo = isset($_POST['inventario']) ? trim($_POST['inventario']) : null;
+
             // Verificar si el nuevo inventario ya existe en la base de datos (evitar duplicados)
-            if ($inventario_original !== $inventario_nuevo) {
-                $sql_check = "SELECT inventario FROM t_alta_equipo WHERE inventario = :inventario_nuevo";
+            if (!empty($inventario_nuevo)) {
+                $sql_check = "SELECT inventario FROM t_alta_equipo WHERE inventario = :inventario_nuevo AND id_alta != :id_alta";
                 $stmt_check = $pdo->prepare($sql_check);
                 $stmt_check->bindParam(':inventario_nuevo', $inventario_nuevo, PDO::PARAM_STR);
+                $stmt_check->bindParam(':id_alta', $id_alta, PDO::PARAM_INT);
                 $stmt_check->execute();
                 
                 if ($stmt_check->rowCount() > 0) {
@@ -76,13 +78,13 @@ try {
                 foto_disco_duro = :foto_disco_duro, 
                 foto_memoria = :foto_memoria, 
                 id_facultad = :id_facultad 
-            WHERE inventario = :inventario_original";
+            WHERE id_alta = :id_alta";
 
             // Preparar la consulta
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 ':inventario_nuevo' => $inventario_nuevo,
-                ':inventario_original' => $inventario_original,
+                ':id_alta' => $id_alta,
                 ':serie' => $_POST['serie'],
                 ':activo' => $_POST['activo'],
                 ':nombre_equipo' => $_POST['nombre_equipo'],
