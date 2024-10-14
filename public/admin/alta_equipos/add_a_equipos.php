@@ -32,20 +32,19 @@ try {
 
             // Insert query for adding a new equipment
             $sql = "INSERT INTO t_alta_equipo (
-                inventario, serie, activo, nombre_equipo, ubicacion, tipo_equipo, marca, modelo,
-                procesador, memoria_total, disco_duro_1, marca_dd1, serie_dd1, modelo_dd1,
-                disco_duro_2, marca_dd2, serie_dd2, modelo_dd2, marca_memoria_1, serie_memoria_1,
-                marca_memoria_2, serie_memoria_2, marca_memoria_3, serie_memoria_3,
-                marca_memoria_4, serie_memoria_4, marca_monitor, modelo_monitor,
-                serie_monitor, foto_disco_duro, foto_memoria, id_facultad
+                inventario, serie, activo, nombre_equipo, ubicacion, tipo_equipo, marca, modelo, procesador,
+                tip_memoria, memoria_total, disco_duro_1, marca_dd1, serie_dd1, modelo_dd1, disco_duro_2, marca_dd2, 
+                serie_dd2, modelo_dd2, marca_memoria_1, serie_memoria_1, marca_memoria_2, serie_memoria_2, marca_memoria_3, 
+                serie_memoria_3, marca_memoria_4, serie_memoria_4, marca_monitor, modelo_monitor, serie_monitor, 
+                foto_disco_duro, foto_memoria, id_facultad
             ) VALUES (
-                :inventario, :serie, :activo, :nombre_equipo, :ubicacion, :tipo_equipo, :marca, :modelo,
-                :procesador, :memoria_total, :disco_duro_1, :marca_dd1, :serie_dd1, :modelo_dd1,
-                :disco_duro_2, :marca_dd2, :serie_dd2, :modelo_dd2, :marca_memoria_1, :serie_memoria_1,
-                :marca_memoria_2, :serie_memoria_2, :marca_memoria_3, :serie_memoria_3,
-                :marca_memoria_4, :serie_memoria_4, :marca_monitor, :modelo_monitor,
+                :inventario, :serie, :activo, :nombre_equipo, :ubicacion, :tipo_equipo, :marca, :modelo, :procesador,
+                :tip_memoria, :memoria_total, :disco_duro_1, :marca_dd1, :serie_dd1, :modelo_dd1, :disco_duro_2, :marca_dd2,
+                :serie_dd2, :modelo_dd2, :marca_memoria_1, :serie_memoria_1, :marca_memoria_2, :serie_memoria_2, 
+                :marca_memoria_3, :serie_memoria_3, :marca_memoria_4, :serie_memoria_4, :marca_monitor, :modelo_monitor, 
                 :serie_monitor, :foto_disco_duro, :foto_memoria, :id_facultad
             )";
+            
 
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
@@ -58,7 +57,7 @@ try {
                 ':marca' => isset($_POST['marca']) && $_POST['marca'] !== '' ? strtoupper($_POST['marca']) : null,
                 ':modelo' => isset($_POST['modelo']) && $_POST['modelo'] !== '' ? strtoupper($_POST['modelo']) : null,
                 ':procesador' => isset($_POST['procesador']) && $_POST['procesador'] !== '' ? strtoupper($_POST['procesador']) : null,
-                ':memoria_total' => isset($_POST['memoria_total']) && $_POST['memoria_total'] !== '' ? $_POST['memoria_total'] : null,
+                ':tip_memoria' => isset($_POST['tip_memoria']) && $_POST['tip_memoria'] !== '' ? $_POST['tip_memoria'] : null,
                 ':disco_duro_1' => isset($_POST['disco_duro_1']) && $_POST['disco_duro_1'] !== '' ? strtoupper($_POST['disco_duro_1']) : null,
                 ':marca_dd1' => isset($_POST['marca_dd1']) && $_POST['marca_dd1'] !== '' ? $_POST['marca_dd1'] : null,
                 ':serie_dd1' => isset($_POST['serie_dd1']) && $_POST['serie_dd1'] !== '' ? strtoupper($_POST['serie_dd1']) : null,
@@ -75,10 +74,10 @@ try {
                 ':serie_memoria_3' => isset($_POST['serie_memoria_3']) && $_POST['serie_memoria_3'] !== '' ? $_POST['serie_memoria_3'] : null,
                 ':marca_memoria_4' => isset($_POST['marca_memoria_4']) && $_POST['marca_memoria_4'] !== '' ? $_POST['marca_memoria_4'] : null,
                 ':serie_memoria_4' => isset($_POST['serie_memoria_4']) && $_POST['serie_memoria_4'] !== '' ? $_POST['serie_memoria_4'] : null,
+                ':memoria_total' => isset($_POST['memoria_total']) && $_POST['memoria_total'] !== '' ? $_POST['memoria_total'] : null,
                 ':marca_monitor' => isset($_POST['marca_monitor']) && $_POST['marca_monitor'] !== '' ? $_POST['marca_monitor'] : null,
                 ':modelo_monitor' => isset($_POST['modelo_monitor']) && $_POST['modelo_monitor'] !== '' ? $_POST['modelo_monitor'] : null,
                 ':serie_monitor' => isset($_POST['serie_monitor']) && $_POST['serie_monitor'] !== '' ? strtoupper($_POST['serie_monitor']) : null,
-
                 ':foto_disco_duro' => $foto_disco_duro,
                 ':foto_memoria' => $foto_memoria,
                 ':id_facultad' => $id_facultad  // Facultades relacionadas del usuario
@@ -287,7 +286,7 @@ try {
                             <input type="number" class="form-control" id="inventario" name="inventario" required style="text-transform: uppercase;" disabled>
                         </div>
 
-                        
+
 
                         <div class="form-group" id="activoGroup" style="display: none;">
                             <label for="activo">Activo:</label>
@@ -371,13 +370,23 @@ try {
                             <label for="memoria_total">Memoria Total:
                             </label>
                             <select class="form-control" id="memoria_total" name="memoria_total">
+                                <option value="" disabled selected hidden>Seleccionar Memoria Total</option>
                                 <?php foreach ($tipos_memoria as $tipo_memoria): ?>
-                                    <option value="" disabled selected hidden>Seleccionar Memoria Tota</option>
-
                                     <option value="<?php echo $tipo_memoria['id_tmemoria']; ?>"><?php echo $tipo_memoria['tp_memoria']; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="tip_memoria">Memoria:</label>
+                            <select class="form-control" id="tip_memoria" name="tip_memoria">
+                                <option value="" disabled selected hidden>Seleccionar Tipo de Memoria</option>
+                                <?php foreach ($memorias as $memoria): ?>
+                                    <option value="<?php echo $memoria['id_memoria']; ?>"><?php echo $memoria['memoria']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+
                         <div class="form-group">
                             <label for="disco_duro_1">Disco Duro 1:
                             </label>
@@ -453,7 +462,7 @@ try {
                         </div>
                         <div class="form-group">
                             <label for="serie_memoria_1">Serie Memoria 1:</label>
-                            <input type="text" class="form-control" id="serie_memoria_1" name="serie_memoria_1"  style="text-transform: uppercase;">
+                            <input type="text" class="form-control" id="serie_memoria_1" name="serie_memoria_1" style="text-transform: uppercase;">
                         </div>
                         <div class="form-group">
                             <label for="marca_memoria_2">Marca Memoria 2:</label>
@@ -468,7 +477,7 @@ try {
                         </div>
                         <div class="form-group">
                             <label for="serie_memoria_2">Serie Memoria 2:</label>
-                            <input type="text" class="form-control" id="serie_memoria_2" name="serie_memoria_2"  style="text-transform: uppercase;">
+                            <input type="text" class="form-control" id="serie_memoria_2" name="serie_memoria_2" style="text-transform: uppercase;">
                         </div>
                         <div class="form-group">
                             <label for="marca_memoria_3">Marca Memoria 3:</label>
@@ -483,7 +492,7 @@ try {
                         </div>
                         <div class="form-group">
                             <label for="serie_memoria_3">Serie Memoria 3:</label>
-                            <input type="text" class="form-control" id="serie_memoria_3" name="serie_memoria_3"  style="text-transform: uppercase;">
+                            <input type="text" class="form-control" id="serie_memoria_3" name="serie_memoria_3" style="text-transform: uppercase;">
                         </div>
                         <div class="form-group">
                             <label for="marca_memoria_4">Marca Memoria 4:</label>
@@ -498,7 +507,7 @@ try {
                         </div>
                         <div class="form-group">
                             <label for="serie_memoria_4">Serie Memoria 4:</label>
-                            <input type="text" class="form-control" id="serie_memoria_4" name="serie_memoria_4"  style="text-transform: uppercase;">
+                            <input type="text" class="form-control" id="serie_memoria_4" name="serie_memoria_4" style="text-transform: uppercase;">
                         </div>
                         <div class="form-group">
                             <label for="marca_monitor">Marca Monitor:</label>
@@ -524,7 +533,7 @@ try {
                         </div>
                         <div class="form-group">
                             <label for="serie_monitor">Serie Monitor:</label>
-                            <input type="text" class="form-control" id="serie_monitor" name="serie_monitor"  style="text-transform: uppercase;">
+                            <input type="text" class="form-control" id="serie_monitor" name="serie_monitor" style="text-transform: uppercase;">
                         </div>
                         <button type="submit" class="btn btn-success btn-block"><i class="fas fa-save"></i> Guardar</button>
                         <a href="a_equipos.php" class="btn btn-secondary btn-block"><i class="fas fa-arrow-left"></i> Volver</a>
