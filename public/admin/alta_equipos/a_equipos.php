@@ -605,7 +605,7 @@ try {
                                     <td><?php echo htmlspecialchars($equipo['marca_equipo']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['modelo_equipo']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['procesador_nombre']); ?></td>
-                                    <td><?php echo htmlspecialchars($equipo['tipo_memoria_nombre']); ?></td>
+                                    <td><?php echo htmlspecialchars($equipo['memoria_total_nombre']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['disco_duro_1']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['marca_dd1']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['modelo_dd1']); ?></td>
@@ -620,7 +620,7 @@ try {
                                     <td><?php echo htmlspecialchars($equipo['serie_memoria_3']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['marca_memoria_4']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['serie_memoria_4']); ?></td>
-                                    <td><?php echo htmlspecialchars($equipo['memoria_total_nombre']); ?></td>
+                                    <td><?php echo htmlspecialchars($equipo['tipo_memoria_nombre']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['marca_monitor']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['modelo_monitor']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['serie_monitor']); ?></td>
